@@ -4,6 +4,22 @@
 
 ---
 
+## 2026-05-27 — Tag 1 · Stack läuft
+
+### Live
+- **Hetzner-Server** in Falkenstein bezogen (CPX22, 3 vCPU, 4 GB RAM, 80 GB SSD)
+- **System gehärtet:** ufw, fail2ban, automatische Sicherheits-Patches, root-SSH deaktiviert
+- **Docker-Stack steht:** PostgreSQL+pgvector, Redis, API (FastAPI), Public Site
+- **API-Healthcheck** antwortet, **Budget-Guard** funktioniert ($0/$1.10 heute)
+- **OpenRouter** mit 48,80 $ Saldo verbunden
+
+### Noch nicht
+- Autonomer Agent-Runner (Entscheidung morgen: Claude Code CLI vs. eigener Python-Agent)
+- Custom-Domain für API/Care-App (Public Site läuft auf pflegeos.vercel.app)
+- Erstes echtes Feature — das baut der Agent morgen
+
+---
+
 ## 2026-05-26 — Tag 0 · Grundstein
 
 ### Neu
