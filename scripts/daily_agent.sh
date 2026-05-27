@@ -51,28 +51,26 @@ make process-contributions || echo "process-contributions failed (continuing)"
 
 # ─── 3. Build-Agent ──────────────────────────────────────────
 echo "── Build-Agent ($DATE) ──"
-AGENT_PROMPT=$(cat AGENT_INSTRUCTIONS.md)
 
-# Wir bevorzugen claude (Claude Code CLI). Hermes als Fallback.
-if command -v claude >/dev/null 2>&1; then
-  echo "$AGENT_PROMPT" | claude --print --model claude-sonnet-4-6 \
-    --permission-mode acceptEdits \
-    --append-system-prompt "Heutiges Datum: $DATE. Repo: $ROOT." \
-    > "$LOG_DIR/agent-$DATE.log" 2>&1 || true
-elif command -v hermes >/dev/null 2>&1; then
-  hermes run --prompt-file AGENT_INSTRUCTIONS.md \
-    --cwd "$ROOT" > "$LOG_DIR/agent-$DATE.log" 2>&1 || true
+# .env in die aktuelle Shell laden (für REDIS_URL, OPENROUTER_API_KEY)
+set -a
+source infra/.env
+set +a
+export REDIS_URL="redis://:${REDIS_PASSWORD}@127.0.0.1:6379/0"
+
+# Python-Agent läuft auf dem Host (braucht git-Zugriff fürs Commit/Push)
+.venv-agent/bin/python scripts/build_agent.py 2>&1 | tee "$LOG_DIR/agent-$DATE.log"
+AGENT_EXIT=${PIPESTATUS[0]}
+echo "[daily_agent] build_agent exit: $AGENT_EXIT"
+
+# ─── 4. Tests + Deploy (nur falls Agent etwas committed hat) ──
+if [[ "$AGENT_EXIT" -eq 0 ]]; then
+  echo "── Tests im API-Container ──"
+  if ! docker compose -f infra/docker-compose.yml --env-file infra/.env exec -T api pytest -q tests/ 2>&1 | tee "$LOG_DIR/tests-$DATE.log"; then
+    echo "Post-Commit-Tests rot — siehe Log."
+  fi
 else
-  echo "Kein Agent-CLI gefunden (claude oder hermes). Abbruch."
-  exit 1
-fi
-
-# ─── 4. Tests ────────────────────────────────────────────────
-echo "── Tests ──"
-if ! make test; then
-  echo "Tests rot — kein Deploy." >> "$REPORT_FILE.tmp"
-  make daily-report-failure DATE="$DATE" || true
-  exit 1
+  echo "Agent hat nichts committed (exit=$AGENT_EXIT) — Tests übersprungen."
 fi
 
 # ─── 5. Deploy ───────────────────────────────────────────────
