@@ -19,7 +19,11 @@
 - Docker-Compose-Stack mit nginx + TLS-Routing vorbereitet.
 - 16 rechtliche Anforderungen initial in `legal_requirements.yaml` aufgenommen — von SGB XI über DSGVO Art. 9 bis zu DNQP-Expertenstandards.
 
+### Live
+- **Public Site:** https://pflegeos.vercel.app
+- **Repository:** https://github.com/lars495/pflegeos
+
 ### Was morgen kommt
 - Bewohner-Profil mit Biografie (höchster Personenzentrierungs-Score in Phase 1)
 - Login + Rollen-Modell
-- Erstes echtes Deployment auf den VPS
+- Erstes echtes Deployment auf den Hetzner-VPS

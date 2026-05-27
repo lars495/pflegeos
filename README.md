@@ -2,6 +2,8 @@
 
 > Eine Pflegesoftware für stationäre Langzeitpflege in Deutschland — gebaut für Menschen, nicht für Bürokratie.
 
+🌐 **Live:** [pflegeos.vercel.app](https://pflegeos.vercel.app) · 📜 **Lizenz:** [AGPL-3.0](./LICENSE)
+
 [🇩🇪 Deutsch](#deutsch) · [🇬🇧 English](#english)
 
 ---
@@ -15,8 +17,8 @@ PflegeOS ist ein offenes Experiment: Eine Pflegesoftware, die von einer KI auton
 3. **Offenheit** — Die Community trägt Ideen und Gesetzeswissen bei.
 
 ### Mitwirken
-- **Idee einreichen:** [pflegeos.de/contribute](https://pflegeos.de/contribute) *(noch nicht live)*
-- **Gesetz/Verordnung hochladen:** gleiche URL, andere Sektion
+- **Idee einreichen:** [pflegeos.vercel.app#mitmachen](https://pflegeos.vercel.app#mitmachen) — Formular live, Backend folgt sobald der VPS steht. Bis dahin: <lars@innovation-pflegen.de>
+- **Gesetz/Verordnung hochladen:** gleiche URL, Formularfeld "Art deines Beitrags" → Gesetz
 - **Code beitragen:** Fork & PR — siehe [CONVENTIONS.md](./CONVENTIONS.md). Beiträge stehen unter AGPL-3.0.
 
 ### Tägliches Update
@@ -50,4 +52,4 @@ The project targets German stationary long-term care (`stationäre Langzeitpfleg
 AGPL-3.0. See [LICENSE](./LICENSE) and [NOTICE](./NOTICE).
 
 ### Status
-🌱 **Day 0 — bootstrapping.** Nothing works yet.
+🌱 **Day 0 done.** Public site live at [pflegeos.vercel.app](https://pflegeos.vercel.app). Backend, autonomous build loop and legal-audit cron start once the VPS is provisioned.
