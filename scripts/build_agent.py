@@ -308,9 +308,26 @@ def apply_files(files: list[dict[str, Any]], dry_run: bool = False) -> list[str]
 # Tests + Commit
 # ────────────────────────────────────────────────────────────────────
 
+def _wrap_for_container(cmd: str) -> str:
+    """Pytest/Make/Python-Calls automatisch in den API-Container routen.
+
+    Der Agent läuft auf dem Host (Git-Zugriff), Tests brauchen aber die
+    Python-Deps im Container.
+    """
+    prefixes_to_wrap = ("pytest", "python ", "python3 ", "ruff ", "make ")
+    bare = cmd.strip()
+    if any(bare.startswith(p) for p in prefixes_to_wrap):
+        return (
+            "docker compose -f infra/docker-compose.yml --env-file infra/.env "
+            "exec -T api " + bare
+        )
+    return cmd
+
+
 def run_tests(commands: list[str]) -> tuple[bool, str]:
     log: list[str] = []
-    for cmd in commands:
+    for raw in commands:
+        cmd = _wrap_for_container(raw)
         log.append(f"$ {cmd}")
         try:
             result = subprocess.run(
@@ -475,13 +492,13 @@ async def main(argv: list[str]) -> int:
     success, test_log = run_tests(test_commands)
     print(f"[agent] tests {'ok' if success else 'FAIL'}")
 
-    # 7. Daily Report immer schreiben
+    # 7. Commit oder Revert (Daily Report wird DANACH geschrieben damit er Revert überlebt)
     state = guard.state()
-    report_path = write_daily_report(feature, plan, success, test_log, state.spent_usd)
-    print(f"[agent] daily report: {report_path}")
 
-    # 8. Commit oder Revert
     if success:
+        # Daily Report jetzt schreiben (vor dem Commit, dann wird er Teil des Commits)
+        report_path = write_daily_report(feature, plan, success, test_log, state.spent_usd)
+        print(f"[agent] daily report: {report_path}")
         msg = (
             f"feat: {feature.title}\n\n"
             f"{plan.get('plan', '')}\n\n"
@@ -501,7 +518,9 @@ async def main(argv: list[str]) -> int:
     else:
         print("[agent] tests rot — Dateien werden zurückgesetzt")
         git_revert_all()
-        # Daily Report aber behalten (separater commit)
+        # ERST nach dem Revert den Report schreiben — sonst killt ihn `git clean -fd`
+        report_path = write_daily_report(feature, plan, success, test_log, state.spent_usd)
+        print(f"[agent] daily report: {report_path}")
         subprocess.run(["git", "-C", str(ROOT), "add", str(report_path)], check=False)
         subprocess.run(
             ["git", "-C", str(ROOT), "commit", "-m", f"docs(daily): report {dt.date.today().isoformat()} (no feature shipped)"],
