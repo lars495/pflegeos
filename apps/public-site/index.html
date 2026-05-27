@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PflegeOS — offene Pflegesoftware, autonom entwickelt. Personenzentriert, empowernd, offen.">
+  <title>PflegeOS</title>
+  <link rel="stylesheet" href="/styles.css">
+  <!-- API-Backend (auf Hetzner, sobald online). Lokal: http://localhost:8000 -->
+  <script>window.PFLEGEOS_API = "";  // leer = Formular zeigt Hinweis "Backend noch nicht online"</script>
+</head>
+<body>
+  <header>
+    <nav>
+      <strong>PflegeOS</strong>
+      <a href="#prinzipien">Prinzipien</a>
+      <a href="#mitmachen">Mitmachen</a>
+      <a href="/roadmap.html">Roadmap</a>
+      <a href="/contributions.html">Beiträge</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Eine Pflegesoftware, die von Tag zu Tag besser wird.</h1>
+      <p class="lead">
+        PflegeOS wird täglich von einer KI weiterentwickelt — mit einem Budget
+        von <strong>1 € pro Tag</strong>. Die Software soll Bewohner:innen und
+        Pflegekräfte in den Mittelpunkt stellen. Die Community trägt Ideen
+        und Gesetzeswissen bei.
+      </p>
+      <a href="#mitmachen" class="cta">Einen Beitrag einreichen</a>
+    </section>
+
+    <section id="prinzipien">
+      <h2>Drei Säulen</h2>
+      <div class="pillars">
+        <article>
+          <h3>Personenzentrierung</h3>
+          <p>Bewohner:innen sind Menschen mit Biografie — nicht Fälle.
+             Selbstbestimmung schlägt institutionelle Routine.</p>
+        </article>
+        <article>
+          <h3>Empowerment</h3>
+          <p>Pflegekräfte gestalten Prozesse. KI dient ihnen, niemals umgekehrt.
+             Kein KI-Output wird ohne ihre Bestätigung Teil der Doku.</p>
+        </article>
+        <article>
+          <h3>Offenheit</h3>
+          <p>Jede Person kann Ideen oder juristische Dokumente beitragen.
+             Roadmap und Begründungen sind öffentlich.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="mitmachen">
+      <h2>Beitrag einreichen</h2>
+      <p>
+        Du hast eine Idee, kennst eine Verordnung, die wir berücksichtigen
+        sollten, oder einen Bug gefunden? Schreib uns. Der tägliche Build-Agent
+        liest jede Einreichung — keine bleibt unbeantwortet.
+      </p>
+
+      <form id="contribute-form">
+        <label>
+          Art deines Beitrags
+          <select name="type" required>
+            <option value="idea">💡 Idee / Feature-Wunsch</option>
+            <option value="legal">📜 Gesetz oder Verordnung</option>
+            <option value="bug">🐛 Bug oder Problem</option>
+          </select>
+        </label>
+
+        <label>
+          Titel
+          <input name="title" required minlength="5" maxlength="200" placeholder="Z. B. ‚Stimmungs-Check für Bewohner verbessern‘">
+        </label>
+
+        <label>
+          Beschreibung
+          <textarea name="body" required minlength="20" maxlength="10000" rows="8"
+                    placeholder="Erkläre deinen Vorschlag. Bei Gesetzen: bitte Quellen-URL angeben."></textarea>
+        </label>
+
+        <fieldset>
+          <legend>Über dich (optional)</legend>
+          <label>
+            Name
+            <input name="submitter_name" maxlength="120" placeholder="Wie du im CHANGELOG genannt werden möchtest">
+          </label>
+          <label>
+            E-Mail (nur intern, für Rückfragen)
+            <input type="email" name="submitter_email" placeholder="optional">
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" name="consent_to_credit">
+            Mein Name darf bei Annahme im öffentlichen CHANGELOG erscheinen.
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" name="consent_to_contact">
+            Ich darf für Rückfragen per E-Mail kontaktiert werden.
+          </label>
+        </fieldset>
+
+        <button type="submit">Beitrag senden</button>
+        <p id="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="meta">
+      <h2>Wie das funktioniert</h2>
+      <ol>
+        <li>Eingereichte Beiträge landen automatisch beim täglichen Build-Agenten.</li>
+        <li>Der Agent klassifiziert, prüft auf DSGVO-Risiken und unsere Prinzipien.</li>
+        <li>Status — angenommen, in Prüfung, abgelehnt — wird öffentlich dokumentiert.</li>
+        <li>Bei Annahme wird der Beitrag (mit Einwilligung) im CHANGELOG genannt.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      PflegeOS ist Open Source. Code: <a href="https://github.com/">GitHub</a> ·
+      Tägliches Update: <a href="#">LinkedIn</a> · <a href="#">X</a> ·
+      <a href="/imprint.html">Impressum</a> · <a href="/privacy.html">Datenschutz</a>
+    </p>
+  </footer>
+
+  <script src="/contribute.js" defer></script>
+</body>
+</html>

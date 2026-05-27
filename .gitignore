@@ -1,0 +1,50 @@
+# Secrets
+infra/.env
+infra/certs/
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Node / SvelteKit
+node_modules/
+.svelte-kit/
+build/
+dist/
+
+# Logs & Reports
+logs/
+*.log
+
+# Data directories — handled by Docker volumes
+data/
+db_data/
+redis_data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Inbox sensitive content
+contributions/inbox/*.json
+!contributions/inbox/.gitkeep
+
+# Audio uploads (Patientendaten — NIE committen)
+audio/
+*.wav
+*.mp3
+*.m4a
+*.ogg

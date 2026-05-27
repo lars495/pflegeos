@@ -1,0 +1,233 @@
+# Legal Requirements — Quelle der Wahrheit für rechtliche Pflichten
+#
+# Wird vom monatlichen Legal-Audit-Agenten aktualisiert.
+# Manuelle Einträge sind erlaubt — Agent merged anhand der ID.
+#
+# Status-Werte:
+#   compliant — Anforderung erfüllt + Test belegt es
+#   risk      — teilweise erfüllt, Lücken bekannt
+#   gap       — nicht erfüllt
+#   planned   — bewusst noch nicht umgesetzt, in Roadmap
+#
+# Severity:
+#   critical — Bußgeld-/Patientensicherheits-Risiko, blockiert Deploy
+#   high     — Audit-relevant, sollte zeitnah behoben werden
+#   medium   — Best Practice
+#   low      — Nice-to-have
+
+version: 1
+last_audit: null
+
+requirements:
+
+  # === SGB XI — Pflegeversicherung ===
+
+  - id: SGB_XI_113b
+    title: "Personalbemessung nach PpUGV"
+    source_url: "https://www.gesetze-im-internet.de/sgb_11/__113b.html"
+    summary: >
+      Pflegeeinrichtungen müssen nach dem Personalbemessungsverfahren
+      (PpUGV) die erforderliche Personalausstattung ermitteln und
+      vorhalten. Dokumentation der Ist-Besetzung verpflichtend.
+    affects: ["Dienstplanung", "Reports"]
+    implemented_in: []
+    test_files: []
+    status: planned
+    severity: high
+    last_verified: null
+    notes: "Phase 5"
+
+  - id: SGB_XI_113c
+    title: "Personaluntergrenze"
+    source_url: "https://www.gesetze-im-internet.de/sgb_11/__113c.html"
+    summary: >
+      Mindestpersonalschlüssel je Versorgungsbereich. Unterschreitung
+      ist meldepflichtig.
+    affects: ["Dienstplanung"]
+    implemented_in: []
+    test_files: []
+    status: planned
+    severity: high
+    last_verified: null
+
+  # === BGB — Betreuungsrecht ===
+
+  - id: BGB_1901a
+    title: "Patientenverfügung und mutmaßlicher Wille"
+    source_url: "https://www.gesetze-im-internet.de/bgb/__1901a.html"
+    summary: >
+      Bei nicht-einwilligungsfähigen Personen ist der zuvor erklärte
+      oder mutmaßliche Wille maßgeblich, nicht das, was Angehörige
+      oder Behandelnde für richtig halten.
+    affects: ["Pflegeplan-Canvas", "Angehörigen-Portal"]
+    implemented_in: []
+    test_files: []
+    status: planned
+    severity: critical
+    last_verified: null
+    notes: >
+      Direkt verbunden mit Phase-2-Feature "Tochter-Ich vs. Mutter-Wille".
+      Im UI muss explizit zwischen "eigenem Wunsch" und "mutmaßlichem
+      Willen" unterschieden werden.
+
+  - id: BGB_1827
+    title: "Patientenverfügung — Formerfordernis"
+    source_url: "https://www.gesetze-im-internet.de/bgb/__1827.html"
+    summary: >
+      Patientenverfügung muss schriftlich erfolgen. Software-gespeicherte
+      Verfügungen brauchen Verweis auf Original.
+    affects: ["Bewohner-Profil"]
+    implemented_in: []
+    test_files: []
+    status: planned
+    severity: high
+    last_verified: null
+
+  # === DSGVO ===
+
+  - id: DSGVO_ART9
+    title: "Verarbeitung besonderer Kategorien personenbezogener Daten"
+    source_url: "https://dsgvo-gesetz.de/art-9-dsgvo/"
+    summary: >
+      Gesundheitsdaten dürfen nur mit ausdrücklicher Einwilligung oder
+      einer der in Art. 9 Abs. 2 genannten Rechtsgrundlagen verarbeitet
+      werden. Technische und organisatorische Maßnahmen (TOM) verpflichtend.
+    affects: ["alle Module"]
+    implemented_in: []
+    test_files: []
+    status: planned
+    severity: critical
+    last_verified: null
+
+  - id: DSGVO_ART15
+    title: "Auskunftsrecht der betroffenen Person"
+    source_url: "https://dsgvo-gesetz.de/art-15-dsgvo/"
+    summary: >
+      Bewohner (und Angehörige bezüglich eigener Daten) müssen
+      maschinenlesbar Auskunft erhalten können über alle gespeicherten
+      personenbezogenen Daten.
+    affects: ["Bewohner-Profil", "Angehörigen-Portal"]
+    implemented_in: []
+    test_files: []
+    status: planned
+    severity: high
+    last_verified: null
+
+  - id: DSGVO_ART17
+    title: "Recht auf Löschung"
+    source_url: "https://dsgvo-gesetz.de/art-17-dsgvo/"
+    summary: >
+      Betroffene haben Anspruch auf Löschung — soweit nicht
+      Aufbewahrungspflichten (Pflegedoku) entgegenstehen.
+    affects: ["alle Module mit personenbezogenen Daten"]
+    implemented_in: []
+    test_files: []
+    status: planned
+    severity: high
+    last_verified: null
+
+  - id: DSGVO_ART32
+    title: "Sicherheit der Verarbeitung"
+    source_url: "https://dsgvo-gesetz.de/art-32-dsgvo/"
+    summary: >
+      Pseudonymisierung, Verschlüsselung, Vertraulichkeit, Integrität,
+      Verfügbarkeit, Belastbarkeit — Stand der Technik.
+    affects: ["Infrastruktur"]
+    implemented_in: []
+    test_files: []
+    status: planned
+    severity: critical
+    last_verified: null
+
+  # === DNQP-Expertenstandards ===
+
+  - id: DNQP_STURZ_2022
+    title: "Expertenstandard Sturzprophylaxe in der Pflege (2. Aktualisierung 2022)"
+    source_url: "https://www.dnqp.de/expertenstandards-und-auditinstrumente/sturzprophylaxe/"
+    summary: >
+      Systematische Sturzrisikoeinschätzung, individuelle Maßnahmenplanung,
+      Schulung der Bewohner und Pflegekräfte, Sturz-Dokumentation
+      und Auswertung.
+    affects: ["Pflegeplan-Canvas", "Risikoeinschätzung"]
+    implemented_in: []
+    test_files: []
+    status: planned
+    severity: high
+    last_verified: null
+    notes: "Kostenpflichtige Quelle — Volltext separat einpflegen."
+
+  - id: DNQP_DEKUBITUS_2017
+    title: "Expertenstandard Dekubitusprophylaxe (2. Aktualisierung 2017)"
+    source_url: "https://www.dnqp.de/expertenstandards-und-auditinstrumente/dekubitusprophylaxe/"
+    summary: >
+      Risikoeinschätzung mit Braden/Norton, individuelle Bewegungsförderung,
+      Hautbeobachtung, Druckverteilung, Information & Schulung.
+    affects: ["Pflegeplan-Canvas", "Risikoeinschätzung"]
+    implemented_in: []
+    test_files: []
+    status: planned
+    severity: high
+    last_verified: null
+
+  - id: DNQP_DEMENZ_2018
+    title: "Expertenstandard Beziehungsgestaltung in der Pflege von Menschen mit Demenz"
+    source_url: "https://www.dnqp.de/expertenstandards-und-auditinstrumente/demenz/"
+    summary: >
+      Personenzentrierte Beziehungsgestaltung, Biografiearbeit,
+      Validation, Anpassung von Kommunikation und Umgebung.
+    affects: ["Bewohner-Profil", "Pflegeplan-Canvas", "Mutmaßlicher Wille"]
+    implemented_in: []
+    test_files: []
+    status: planned
+    severity: high
+    last_verified: null
+    notes: >
+      Diese Anforderung ist sehr stark deckungsgleich mit Säule
+      "Personenzentrierung" in PRINCIPLES.md.
+
+  # === MDK/MD ===
+
+  - id: MD_QPR_2023
+    title: "Qualitätsprüfungs-Richtlinien stationäre Pflege (QPR)"
+    source_url: "https://md-bund.de/themen/pflegequalitaet/qualitaetspruefungen.html"
+    summary: >
+      MD prüft Indikatoren der Ergebnisqualität (Mobilität, Ernährung,
+      kognitive Fähigkeiten, Schmerz, Wundversorgung, etc.).
+      Daten halbjährlich an DAS (Datenauswertungsstelle) zu liefern.
+    affects: ["Reports", "Indikatoren-Modul"]
+    implemented_in: []
+    test_files: []
+    status: planned
+    severity: high
+    last_verified: null
+
+  # === Landesheimrecht (Beispiel Berlin — alle 16 Länder folgen) ===
+
+  - id: WTG_BE_HEIMRECHT
+    title: "Wohnteilhabegesetz Berlin (WTG)"
+    source_url: "https://gesetze.berlin.de/perma?j=WoTeilhG_BE"
+    summary: >
+      Schutzrechte der Bewohner, Mitwirkungsrechte, Heimaufsicht.
+      Mitwirkung von Bewohnervertretung dokumentationspflichtig.
+    affects: ["Bewohnervertretung-Modul (zukünftig)"]
+    implemented_in: []
+    test_files: []
+    status: planned
+    severity: medium
+    last_verified: null
+    notes: "TODO: alle 16 Länderrechte einpflegen."
+
+  # === Arbeitsschutz für Pflegekräfte ===
+
+  - id: ARBZG_PFLEGE
+    title: "Arbeitszeitgesetz mit Pflege-Besonderheiten"
+    source_url: "https://www.gesetze-im-internet.de/arbzg/"
+    summary: >
+      Tägliche Höchstarbeitszeit, Ruhezeiten, Pausen. Bei
+      Bereitschaftsdiensten besondere Regelungen.
+    affects: ["Dienstplanung"]
+    implemented_in: []
+    test_files: []
+    status: planned
+    severity: high
+    last_verified: null
