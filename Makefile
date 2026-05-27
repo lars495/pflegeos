@@ -13,8 +13,17 @@ first-boot:  ## Erststart auf frischem VPS
 	@test -f infra/.env || (echo "infra/.env fehlt — siehe infra/.env.example" && exit 1)
 	$(COMPOSE) build
 	$(COMPOSE) up -d db redis
-	@sleep 5
-	$(COMPOSE) run --rm api alembic upgrade head
+	@echo "Warte auf DB/Redis health…"
+	@for i in $$(seq 1 30); do \
+	  $(COMPOSE) ps db redis 2>/dev/null | grep -c healthy | grep -q 2 && break; \
+	  sleep 2; \
+	done
+	# alembic-Migration sobald erste Migrations-Dateien existieren
+	@if [ -d apps/api/alembic/versions ] && ls apps/api/alembic/versions/*.py >/dev/null 2>&1; then \
+	  $(COMPOSE) run --rm api alembic upgrade head; \
+	else \
+	  echo "Keine Migrations vorhanden — Agent wird sie anlegen."; \
+	fi
 	$(COMPOSE) up -d
 
 tls:  ## Let's-Encrypt-Zertifikate (acme.sh, einmalig)
