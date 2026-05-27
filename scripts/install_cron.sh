@@ -8,6 +8,11 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 TMP=$(mktemp)
 crontab -l 2>/dev/null | grep -v "# PflegeOS:" > "$TMP" || true
 
+# Zeitzone in der Crontab setzen — sonst läuft alles UTC und Lars muss rechnen
+if ! grep -q "^CRON_TZ=" "$TMP"; then
+  echo "CRON_TZ=Europe/Berlin" >> "$TMP"
+fi
+
 cat >> "$TMP" <<EOF
 # PflegeOS: täglicher Build-Agent (03:00 Berlin)
 0 3 * * * cd $ROOT && ./scripts/daily_agent.sh >> $ROOT/logs/daily.log 2>&1
