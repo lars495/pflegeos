@@ -59,7 +59,7 @@ set +a
 export REDIS_URL="redis://:${REDIS_PASSWORD}@127.0.0.1:6379/0"
 
 # Python-Agent läuft auf dem Host (braucht git-Zugriff fürs Commit/Push)
-.venv-agent/bin/python scripts/build_agent.py 2>&1 | tee "$LOG_DIR/agent-$DATE.log"
+python3 scripts/build_agent.py 2>&1 | tee "$LOG_DIR/agent-$DATE.log"
 AGENT_EXIT=${PIPESTATUS[0]}
 echo "[daily_agent] build_agent exit: $AGENT_EXIT"
 
