@@ -181,7 +181,7 @@ adduser pflegeos && usermod -aG docker pflegeos
 su - pflegeos
 
 # 3. Repo
-git clone https://github.com/<user>/pflegeos.git
+git clone https://github.com/lars495/pflegeos.git
 cd pflegeos
 
 # 4. Secrets

@@ -48,5 +48,5 @@ async def root() -> dict:
         "name": "PflegeOS",
         "version": app.version,
         "docs": "/docs",
-        "principles": "https://github.com/<user>/pflegeos/blob/main/PRINCIPLES.md",
+        "principles": "https://github.com/lars495/pflegeos/blob/main/PRINCIPLES.md",
     }
