@@ -6,7 +6,12 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 TMP=$(mktemp)
-crontab -l 2>/dev/null | grep -v "# PflegeOS:" > "$TMP" || true
+# Alle existierenden PflegeOS-Einträge entfernen (Kommentar-Zeilen UND Command-Zeilen UND CRON_TZ)
+crontab -l 2>/dev/null \
+  | grep -v "# PflegeOS:" \
+  | grep -v "/home/pflegeos/pflegeos" \
+  | grep -v "^CRON_TZ=Europe/Berlin" \
+  > "$TMP" || true
 
 # Zeitzone in der Crontab setzen — sonst läuft alles UTC und Lars muss rechnen
 if ! grep -q "^CRON_TZ=" "$TMP"; then
