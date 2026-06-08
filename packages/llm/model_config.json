@@ -1,0 +1,17 @@
+{
+  "_comment": "Aktive Modell-Konfiguration. Wird vom wöchentlichen check_model_updates.py überschrieben.",
+  "build_primary": "nousresearch/hermes-4-70b",
+  "build_primary_name": "Nous: Hermes 4 70B",
+  "build_primary_set_at": "2026-05-27",
+  "build_primary_set_reason": "Hermes 4 — neueste Version (Mai 2026). Günstiger als Deepseek auf Prompt-Seite, hybrid reasoning, sehr gutes Deutsch.",
+  "build_cheap": "google/gemini-flash-1.5",
+  "care_primary": "nousresearch/hermes-4-70b",
+  "legal": "anthropic/claude-3.7-sonnet",
+  "last_update_check": "2026-05-27",
+  "known_hermes_versions": [
+    "nousresearch/hermes-4-70b",
+    "nousresearch/hermes-4-405b",
+    "nousresearch/hermes-3-llama-3.1-70b",
+    "nousresearch/hermes-3-llama-3.1-405b"
+  ]
+}

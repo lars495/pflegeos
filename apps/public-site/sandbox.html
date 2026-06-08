@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PflegeOS Sandbox — Probiere die Software interaktiv aus. Keine echten Daten, keine Anmeldung.">
+  <title>PflegeOS · Sandbox</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/sandbox.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/"><strong>PflegeOS</strong></a>
+      <a href="/#prinzipien">Prinzipien</a>
+      <a href="/#mitmachen">Mitmachen</a>
+      <a href="/roadmap.html">Roadmap</a>
+      <span class="badge-sandbox">🧪 Sandbox</span>
+    </nav>
+  </header>
+
+  <main>
+    <section class="sandbox-intro">
+      <h1>Sandbox — so soll PflegeOS sich anfühlen</h1>
+      <p class="lead">
+        Alle Personen und Daten hier sind <strong>erfunden</strong>. Kein Login, keine echten Daten.
+        Dies ist ein interaktiver Vorgeschmack auf das, was der autonome Agent gerade baut.
+      </p>
+      <div class="sandbox-notice">
+        ⚠️ Dies ist kein echtes Produkt — sondern ein Experiment. Die Funktionen hier spiegeln den
+        aktuellen Baustand wider. Manche Dinge sind noch Mockup.
+      </div>
+    </section>
+
+    <!-- ═══ TABS ═══════════════════════════════════════════════════ -->
+    <div class="tabs" role="tablist">
+      <button class="tab active" role="tab" data-tab="profil">🧓 Bewohnerin</button>
+      <button class="tab" role="tab" data-tab="pflegeplan">📋 Pflegeplan</button>
+      <button class="tab" role="tab" data-tab="uebergabe">🔄 Übergabe</button>
+      <button class="tab" role="tab" data-tab="reflexion">💭 Reflexion</button>
+    </div>
+
+    <!-- ═══ TAB: BEWOHNERIN-PROFIL ══════════════════════════════════ -->
+    <section class="tab-content active" id="tab-profil">
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="avatar">ML</div>
+          <div>
+            <h2>Maria Lieselotte Bergmann</h2>
+            <p class="profile-meta">
+              *12. März 1938 · Zimmer 214 · Einzug: 3. Januar 2024
+            </p>
+            <div class="mood-strip">
+              <span>Heute:</span>
+              <button class="mood-btn active" title="Gut">😊</button>
+              <button class="mood-btn" title="Mittel">😐</button>
+              <button class="mood-btn" title="Nicht gut">😔</button>
+              <button class="mood-btn" title="Sehr schlecht">😢</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-grid">
+          <article class="profile-block bio">
+            <h3>Wer ich bin</h3>
+            <p>
+              Ich habe 30 Jahre lang als Grundschullehrerin gearbeitet — in Freiburg,
+              dann in Karlsruhe. Meine Klassen lagen mir sehr am Herzen. Mein Mann
+              Heinrich und ich haben zwei Töchter großgezogen: Sabine (heute Ärztin
+              in München) und Renate (Lehrerin, genau wie ich). Wir haben viel Urlaub
+              an der Nordsee gemacht — mein Lieblingsort ist Sylt.
+            </p>
+            <button class="btn-secondary" onclick="expandBio()">Mehr Lebensgeschichte…</button>
+          </article>
+
+          <article class="profile-block wishes">
+            <h3>Meine Wünsche und Vorlieben</h3>
+            <ul class="prefs-list">
+              <li>☕ Kaffee mit viel Milch, morgens <em>vor</em> dem Waschen</li>
+              <li>📰 Badische Zeitung lesen, wenn möglich</li>
+              <li>🎵 Volkslieder und Schlager aus den 60ern</li>
+              <li>🌿 Im Garten sitzen — besonders wenn die Rosen blühen</li>
+              <li>❌ Kein Spinat, bitte nie</li>
+            </ul>
+            <div class="open-wish">
+              <strong>Offener Wunsch:</strong> „Ich möchte einmal wieder ans Meer. Sylt wäre schön."
+              <span class="wish-status">📋 Sozialdienst informiert</span>
+            </div>
+          </article>
+
+          <article class="profile-block voice-entry">
+            <h3>Frau Bergmann erzählt… <span class="badge-ai">Sprachnotiz, 14.05.2026</span></h3>
+            <blockquote>
+              „Heute habe ich von Heinrich geträumt. Wir waren am Strand, und er hat mir
+              Muscheln gebracht. Es war so ein schöner Traum. Ich vermisse ihn sehr, aber
+              ich bin froh, dass Sabine nächste Woche kommt."
+            </blockquote>
+            <button class="btn-audio" onclick="playMock()">▶ Aufnahme anhören (Demo)</button>
+          </article>
+
+          <article class="profile-block risk">
+            <h3>Aktuelle Hinweise</h3>
+            <div class="risk-item low">
+              <strong>Sturzrisiko:</strong> Gering — geht mit Rollator, aufmerksam
+            </div>
+            <div class="risk-item medium">
+              <strong>Ernährung:</strong> Gewicht letzte Woche -0,8 kg — beobachten
+            </div>
+            <div class="risk-item info">
+              <strong>Kognition:</strong> Orientiert, leichte Wortfindungsstörungen abends
+            </div>
+            <p class="risk-note">
+              <em>Diese Einschätzung wurde von Pflegerin K. Maier am 20.05.2026 bestätigt.</em>
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ TAB: PFLEGEPLAN-CANVAS ══════════════════════════════════ -->
+    <section class="tab-content" id="tab-pflegeplan">
+      <div class="canvas-header">
+        <h2>Pflegeplan-Canvas · Maria Bergmann</h2>
+        <p>Vier Stimmen — eine Planung. Stand: 20.05.2026</p>
+      </div>
+
+      <div class="four-voices">
+        <article class="voice resident">
+          <h3>🧓 Frau Bergmann sagt</h3>
+          <div class="voice-entry">
+            <strong>Morgens:</strong>
+            „Ich möchte selbst entscheiden, wann ich aufstehe. Nicht vor halb acht bitte."
+          </div>
+          <div class="voice-entry">
+            <strong>Körperpflege:</strong>
+            „Ich wasche mich gerne selbst, soweit ich kann. Bitte helft mir nur, wenn ich frage."
+          </div>
+          <div class="voice-entry confirmed">
+            ✓ <em>Von Frau Bergmann am 15.05.2026 per Sprache bestätigt</em>
+          </div>
+        </article>
+
+        <article class="voice family">
+          <h3>👨‍👩‍👧 Tochter Sabine sagt</h3>
+          <div class="two-col-voice">
+            <div>
+              <h4>Als Tochter wünsche ich…</h4>
+              „Ich möchte, dass sie genug isst und jemanden hat zum Reden."
+            </div>
+            <div>
+              <h4>Mutter hätte gewollt…</h4>
+              „Sie hat immer gesagt: ‚Ich will nicht, dass man für mich entscheidet.' Selbstständigkeit war ihr das Wichtigste."
+            </div>
+          </div>
+        </article>
+
+        <article class="voice nurse">
+          <h3>👩‍⚕️ Pflegekraft K. Maier sagt</h3>
+          <div class="voice-entry">
+            <strong>Mobilität:</strong>
+            Frau Bergmann ist mit Rollator sicher. Treppensteigen nur mit Begleitung.
+            Eigenständigkeit fördern wo möglich.
+          </div>
+          <div class="voice-entry">
+            <strong>Ernährung:</strong>
+            Gewichtsverlauf beobachten. Lieblingsessen Mittwochs anbieten (Kartoffelsuppe).
+          </div>
+        </article>
+
+        <article class="voice ai">
+          <h3>🤖 KI-Vorschlag <span class="ai-badge">Vorschlag — nicht aktiv bis bestätigt</span></h3>
+          <div class="voice-entry">
+            <strong>Basierend auf DNQP-Expertenstandard Ernährung:</strong>
+            Gewichtsverlust von &gt;3% in 4 Wochen: Ernährungsprotokoll empfohlen.
+            Ursache klären (Appetitmangel, Zahnprobleme, soziale Faktoren?).
+          </div>
+          <div class="ai-action-row">
+            <button class="btn-accept" onclick="acceptAI()">✓ Übernehmen</button>
+            <button class="btn-reject" onclick="rejectAI()">✗ Ablehnen</button>
+            <button class="btn-discuss" onclick="discussAI()">💬 Besprechen</button>
+          </div>
+          <div class="ai-source">
+            Quelle: DNQP Expertenstandard Ernährungsmanagement 2023, S. 34
+          </div>
+        </article>
+      </div>
+
+      <div class="conflict-box">
+        <h3>⚠️ Offene Spannung</h3>
+        <p>
+          <strong>Thema Aufstehzeit:</strong> Frau Bergmann möchte nicht vor 07:30 geweckt werden.
+          Der Schichtplan sieht Körperpflege aktuell ab 07:00 vor.
+        </p>
+        <p class="conflict-principle">
+          Gemäß unseren Grundsätzen gilt: <strong>Der Wille von Frau Bergmann hat Vorrang.</strong>
+          Bitte Dienstplan anpassen.
+        </p>
+        <button class="btn-secondary" onclick="resolveConflict()">Dienstplan anpassen</button>
+      </div>
+    </section>
+
+    <!-- ═══ TAB: ÜBERGABE ════════════════════════════════════════════ -->
+    <section class="tab-content" id="tab-uebergabe">
+      <div class="handover">
+        <h2>Übergabe-Co-Pilot</h2>
+        <p>Pflegekraft spricht 2 Minuten — KI strukturiert. Pflegekraft bestätigt.</p>
+
+        <div class="handover-demo">
+          <div class="mic-area" id="mic-area" onclick="toggleRecording()">
+            <div class="mic-icon" id="mic-icon">🎙️</div>
+            <p id="mic-label">Tippen zum Aufnehmen (Demo)</p>
+          </div>
+
+          <div class="transcription-mock" id="transcription" style="display:none">
+            <h3>KI-Strukturierung <span class="badge-ai">Entwurf — nicht gespeichert</span></h3>
+            <div class="handover-section">
+              <strong>Frau Bergmann (Zimmer 214):</strong>
+              Heute Nacht gut geschlafen laut Aussage beim Frühstück. Appetit beim Frühstück gut —
+              zwei Scheiben Brot + Kaffee. Nachmittags etwas ruhiger, hat nach Heinrich gefragt
+              (verstorbener Mann). Musik angestellt, hat geholfen.
+            </div>
+            <div class="handover-section">
+              <strong>Besonders morgen:</strong>
+              Tochter Sabine kommt um 14:00. Frau Bergmann freut sich sehr. Zimmer vorher
+              lüften, sie mag frische Luft.
+            </div>
+            <div class="handover-confirm">
+              <button class="btn-accept" onclick="confirmHandover()">✓ So ist es richtig — speichern</button>
+              <button class="btn-secondary" onclick="editHandover()">✏️ Korrigieren</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ TAB: REFLEXION ═══════════════════════════════════════════ -->
+    <section class="tab-content" id="tab-reflexion">
+      <div class="reflection">
+        <h2>60-Sekunden-Reflexion nach der Schicht</h2>
+        <p>
+          Für dich, nicht für die Akte. Kein Vorgesetzter liest das ohne deine Erlaubnis.
+        </p>
+
+        <div class="reflection-form">
+          <label>
+            Was lief heute gut?
+            <textarea placeholder="Z. B. Frau Bergmann hat heute beim Mittagessen gelacht — zum ersten Mal seit Wochen." rows="3"></textarea>
+          </label>
+          <label>
+            Was war schwierig?
+            <textarea placeholder="Z. B. Herr Mayer wollte das Zimmer nicht verlassen. Ich wusste nicht, wie ich ihn ansprechen soll." rows="3"></textarea>
+          </label>
+          <label>
+            Was nehme ich mit?
+            <textarea placeholder="Z. B. Musik hilft wirklich. Morgen früh gleich einschalten." rows="2"></textarea>
+          </label>
+          <button class="btn-primary" onclick="saveReflection()">Reflexion speichern (Demo)</button>
+        </div>
+
+        <div class="reflection-insight" id="reflection-insight" style="display:none">
+          <h3>🤖 KI-Muster aus dieser Woche <span class="badge-ai">Nur für dich sichtbar</span></h3>
+          <p>
+            Du hast diese Woche dreimal Musik als wirksames Mittel erwähnt.
+            Andere in deinem Team auch. Das könnte sich lohnen als Team-Wissen zu teilen?
+          </p>
+          <button class="btn-secondary">Ins Wissens-Wiki eintragen</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="sandbox-footer">
+      <p>
+        Das hier ist ein Vorgeschmack. Vieles ist noch nicht gebaut.
+        Der autonome Agent arbeitet täglich daran weiter.
+      </p>
+      <p>
+        <a href="/#mitmachen" class="cta">Idee einreichen</a>
+        <a href="https://github.com/lars495/pflegeos" class="btn-secondary" target="_blank">Code ansehen</a>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      PflegeOS ist Open Source. Code: <a href="https://github.com/lars495/pflegeos">GitHub</a> ·
+      <a href="/imprint.html">Impressum</a> · <a href="/privacy.html">Datenschutz</a>
+    </p>
+  </footer>
+
+  <script src="/sandbox.js" defer></script>
+</body>
+</html>
