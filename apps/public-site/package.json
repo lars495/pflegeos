@@ -1,0 +1,7 @@
+{
+  "name": "pflegeos-public",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PflegeOS öffentliche Website mit Vercel Serverless Functions",
+  "engines": { "node": ">=18" }
+}

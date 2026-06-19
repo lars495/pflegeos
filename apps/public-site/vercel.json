@@ -3,6 +3,9 @@
   "name": "pflegeos",
   "cleanUrls": true,
   "trailingSlash": false,
+  "functions": {
+    "api/contribute.js": {}
+  },
   "headers": [
     {
       "source": "/(.*)",
