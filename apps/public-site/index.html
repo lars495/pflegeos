@@ -55,45 +55,54 @@
     <section id="mitmachen">
       <h2>Beitrag einreichen</h2>
       <p>
-        Du hast eine Idee, kennst eine Verordnung, die wir berücksichtigen
-        sollten, oder einen Bug gefunden? Schreib uns. Der tägliche Build-Agent
-        liest jede Einreichung — keine bleibt unbeantwortet.
+        Du arbeitest in der Pflege und hast eine Idee, kennst einen wichtigen
+        Expertenstandard oder eine Verordnung — oder etwas stimmt nicht und du
+        willst es melden? Schreib uns. Hermes liest jeden Beitrag täglich und
+        antwortet direkt.
       </p>
 
       <form id="contribute-form">
         <label>
-          Art deines Beitrags
+          Was möchtest du einreichen?
           <select name="type" required>
-            <option value="idea">💡 Idee / Feature-Wunsch</option>
-            <option value="legal">📜 Gesetz oder Verordnung</option>
-            <option value="bug">🐛 Bug oder Problem</option>
+            <option value="idea">💡 Idee oder Wunsch</option>
+            <option value="legal">📄 Gesetz, Standard oder Verordnung</option>
+            <option value="bug">⚠️ Problem oder Kritik</option>
           </select>
         </label>
 
         <label>
-          Titel
-          <input name="title" required minlength="5" maxlength="200" placeholder="Z. B. ‚Stimmungs-Check für Bewohner verbessern‘">
+          Kurze Überschrift
+          <input name="title" required minlength="5" maxlength="200"
+                 placeholder="Z. B. ‚Bewohnerinnen sollten ihre Essenszeiten selbst wählen können’">
         </label>
 
         <label>
-          Beschreibung
+          Dein Beitrag
           <textarea name="body" required minlength="20" maxlength="10000" rows="8"
-                    placeholder="Erkläre deinen Vorschlag. Bei Gesetzen: bitte Quellen-URL angeben."></textarea>
+                    placeholder="Beschreib in deinen eigenen Worten, was du dir wünschst, was du kennst oder was dich stört. Keine bestimmte Form nötig."></textarea>
+        </label>
+
+        <label>
+          Link oder Quelle (optional)
+          <input name="source_url" maxlength="500" type="url"
+                 placeholder="Z. B. Link zum Expertenstandard, einer Verordnung oder einem Artikel">
         </label>
 
         <fieldset>
           <legend>Über dich (optional)</legend>
           <label>
-            Name
-            <input name="submitter_name" maxlength="120" placeholder="Wie du im CHANGELOG genannt werden möchtest">
+            Dein Name
+            <input name="submitter_name" maxlength="120"
+                   placeholder="Wie du genannt werden möchtest, wenn dein Beitrag umgesetzt wird">
           </label>
           <label>
-            E-Mail (nur intern, für Rückfragen)
+            E-Mail (nur für interne Rückfragen, wird nicht veröffentlicht)
             <input type="email" name="submitter_email" placeholder="optional">
           </label>
           <label class="checkbox">
             <input type="checkbox" name="consent_to_credit">
-            Mein Name darf bei Annahme im öffentlichen CHANGELOG erscheinen.
+            Mein Name darf öffentlich genannt werden, wenn mein Beitrag umgesetzt wird.
           </label>
           <label class="checkbox">
             <input type="checkbox" name="consent_to_contact">
@@ -101,7 +110,7 @@
           </label>
         </fieldset>
 
-        <button type="submit">Beitrag senden</button>
+        <button type="submit">Beitrag abschicken</button>
         <p id="form-status" role="status" aria-live="polite"></p>
       </form>
     </section>
@@ -109,10 +118,10 @@
     <section class="meta">
       <h2>Wie das funktioniert</h2>
       <ol>
-        <li>Eingereichte Beiträge landen automatisch beim täglichen Build-Agenten.</li>
-        <li>Der Agent klassifiziert, prüft auf DSGVO-Risiken und unsere Prinzipien.</li>
-        <li>Status — angenommen, in Prüfung, abgelehnt — wird öffentlich dokumentiert.</li>
-        <li>Bei Annahme wird der Beitrag (mit Einwilligung) im CHANGELOG genannt.</li>
+        <li>Dein Beitrag landet direkt bei Hermes, der KI, die PflegeOS täglich weiterentwickelt.</li>
+        <li>Hermes liest ihn, prüft ob er zu unseren Prinzipien passt, und antwortet dir.</li>
+        <li>Angenommene Beiträge kommen auf die öffentliche Roadmap.</li>
+        <li>Wenn du eingewilligt hast, wird dein Name bei Umsetzung genannt.</li>
       </ol>
     </section>
   </main>

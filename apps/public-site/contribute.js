@@ -1,5 +1,4 @@
 // Formular-Einreichung → Vercel Serverless Function → GitHub Issue → Hermes antwortet.
-// Kein Backend auf Hetzner nötig, kein Mixed-Content-Problem.
 
 (function () {
   var form   = document.getElementById('contribute-form');
@@ -16,10 +15,13 @@
     setStatus('Wird gesendet…', '');
 
     var fd = new FormData(form);
+    var sourceUrl = (fd.get('source_url') || '').trim();
+
     var payload = {
       type:              fd.get('type'),
       title:             (fd.get('title')          || '').trim(),
       body:              (fd.get('body')            || '').trim(),
+      source_url:        sourceUrl || null,
       submitter_name:    (fd.get('submitter_name')  || '').trim() || null,
       submitter_email:   (fd.get('submitter_email') || '').trim() || null,
       consent_to_credit:  fd.get('consent_to_credit')  === 'on',
@@ -39,20 +41,21 @@
       var data = await r.json().catch(function () { return {}; });
 
       if (r.status === 202 || r.ok) {
-        var msg = data.message || 'Danke! Dein Beitrag wurde gespeichert und wird in den nächsten 24 Stunden bearbeitet.';
+        // Pflegende sehen keine GitHub-Sprache — nur eine warme Bestätigung
+        var msg = '✓ Danke! Hermes hat deinen Beitrag erhalten und antwortet in den nächsten 24 Stunden.';
         if (data.issue_url) {
-          msg += ' <a href="' + data.issue_url + '" target="_blank" rel="noopener">'
-               + 'Status auf GitHub verfolgen →</a>';
+          msg += ' <a href="' + data.issue_url + '" target="_blank" rel="noopener" style="font-size:.9em">'
+               + 'Beitrag &amp; Antwort ansehen →</a>';
         }
         setStatus(msg, 'ok');
         form.reset();
       } else if (r.status === 429) {
-        setStatus('Bitte etwas später erneut versuchen — Tageslimit erreicht.', 'error');
+        setStatus('Bitte etwas später erneut versuchen.', 'error');
       } else {
-        setStatus(data.error || ('Fehler ' + r.status + ' — bitte später erneut versuchen.'), 'error');
+        setStatus(data.error || 'Etwas hat nicht geklappt — bitte später erneut versuchen.', 'error');
       }
     } catch (err) {
-      setStatus('Verbindungsfehler: ' + err.message, 'error');
+      setStatus('Verbindungsfehler — bitte Seite neu laden und nochmal versuchen.', 'error');
     } finally {
       btn.disabled = false;
     }

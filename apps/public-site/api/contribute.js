@@ -5,8 +5,8 @@
 const REPO = 'lars495/pflegeos';
 const GITHUB_API = 'https://api.github.com';
 
-const TYPE_EMOJI = { idea: '💡', legal: '📜', bug: '🐛' };
-const TYPE_NAME  = { idea: 'Idee / Feature-Wunsch', legal: 'Gesetz oder Verordnung', bug: 'Bug / Problem' };
+const TYPE_EMOJI = { idea: '💡', legal: '📄', bug: '⚠️' };
+const TYPE_NAME  = { idea: 'Idee oder Wunsch', legal: 'Gesetz, Standard oder Verordnung', bug: 'Problem oder Kritik' };
 
 module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') {
@@ -21,6 +21,7 @@ module.exports = async (req, res) => {
     type,
     title,
     body,
+    source_url,
     submitter_name,
     submitter_email,
     consent_to_credit,
@@ -52,6 +53,11 @@ module.exports = async (req, res) => {
 
   // ── Issue-Text aufbauen ──────────────────────────────────────────────────
   let issueBody = `**Typ:** ${TYPE_EMOJI[type]} ${TYPE_NAME[type]}\n\n${b}`;
+
+  const src = String(source_url || '').trim();
+  if (src) {
+    issueBody += `\n\n**Quelle / Link:** ${src}`;
+  }
 
   const name  = String(submitter_name || '').trim();
   const email = String(submitter_email || '').trim();
