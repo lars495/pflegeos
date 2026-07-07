@@ -10,16 +10,20 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 
+from . import models  # noqa: F401 — registriert alle ORM-Modelle bei Base.metadata
+from .db import Base, engine
 from .routes import contribute, health
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
+    # Tabellen anlegen (noch kein Alembic — siehe db.py).
+    # In Tests übernimmt das die conftest-Fixture mit eigener Engine.
+    if os.environ.get("ENV") != "test":
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
     yield
-    # Shutdown
 
 
 app = FastAPI(
@@ -40,6 +44,7 @@ app.add_middleware(
 
 app.include_router(health.router, tags=["meta"])
 app.include_router(contribute.router, prefix="/v1", tags=["community"])
+# Neue Router hier registrieren (Muster: app.include_router(x.router, prefix="/v1", tags=[...]))
 
 
 @app.get("/")
