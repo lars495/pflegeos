@@ -1,0 +1,58 @@
+# Dead-Man-Switch: Merkt, wenn der Build-Agent auf dem VPS still wird.
+#
+# Läuft täglich 06:00 UTC (07:00/08:00 Berlin) — der Agent läuft um 03:00 Berlin,
+# der Report für heute muss also längst da sein. Fehlt er, wird ein Issue
+# geöffnet (GitHub benachrichtigt den Repo-Owner per Mail).
+
+name: Agent Heartbeat
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prüfe heutigen Daily Report
+        id: check
+        run: |
+          TODAY=$(TZ=Europe/Berlin date +%Y-%m-%d)
+          echo "today=$TODAY" >> "$GITHUB_OUTPUT"
+          if [ -f "reports/daily/$TODAY.md" ]; then
+            echo "✅ Report für $TODAY vorhanden — Agent lebt."
+            echo "alive=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "⛔ Kein Report für $TODAY — Agent vermutlich tot."
+            echo "alive=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Issue öffnen falls Agent still
+        if: steps.check.outputs.alive == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TODAY: ${{ steps.check.outputs.today }}
+        run: |
+          # Kein Duplikat: existiert schon ein offenes agent-down-Issue, nur kommentieren
+          EXISTING=$(gh issue list --repo "$GITHUB_REPOSITORY" \
+            --label agent-down --state open --json number --jq '.[0].number // empty')
+
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --repo "$GITHUB_REPOSITORY" \
+              --body "⛔ Auch am $TODAY kein Daily Report. Agent weiterhin still."
+            echo "Kommentar an bestehendes Issue #$EXISTING angehängt."
+          else
+            gh label create agent-down --repo "$GITHUB_REPOSITORY" \
+              --color b60205 --description "Build-Agent liefert keine Reports" 2>/dev/null || true
+            gh issue create --repo "$GITHUB_REPOSITORY" \
+              --title "⛔ Agent still: kein Daily Report für $TODAY" \
+              --label agent-down \
+              --body "$(printf 'Der Build-Agent hat für **%s** keinen Daily Report gepusht.\n\nMögliche Ursachen auf dem VPS prüfen:\n- `crontab -l` — sind die PflegeOS-Jobs noch da?\n- `df -h` — Platte voll?\n- `tail -50 ~/pflegeos/logs/daily.log` — Fehler im letzten Lauf?\n- `cd ~/pflegeos && git push` — Push kaputt (Deploy-Key, Rebase-Konflikt)?\n- Läuft der Server überhaupt? (Hetzner Console)\n\n*Automatisch erstellt vom Heartbeat-Workflow.*' "$TODAY")"
+          fi

@@ -63,6 +63,16 @@ services:
     # Wird durch docker-compose.override.yml entfernt sobald produktiv.
     ports:
       - "127.0.0.1:8000:8000"
+    # Bind-Mounts: der Build-Agent schreibt auf den Host — ohne Mounts sehen
+    # pytest & Co. im Container den neuen Code nie (Image wird nicht neu gebaut).
+    volumes:
+      - ../apps/api:/app/apps/api
+      - ../packages:/app/packages
+      - ../scripts:/app/scripts
+      - ../tests:/app/tests
+      - ../contributions:/app/contributions
+      - ../reports:/app/reports
+      - ../legal_requirements.yaml:/app/legal_requirements.yaml
     depends_on:
       db:
         condition: service_healthy

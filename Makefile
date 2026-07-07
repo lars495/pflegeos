@@ -54,7 +54,11 @@ shell-db:  ## psql in db-Container
 # ─── Tests & Qualität ─────────────────────────────────────────────────────
 test:  ## Test-Suite (pytest + svelte-tests + compliance + a11y)
 	$(COMPOSE) exec -T api pytest -q
-	$(COMPOSE) exec -T care-app npm test --silent
+	@if [ -f apps/care-app/package.json ]; then \
+	  $(COMPOSE) exec -T care-app npm test --silent; \
+	else \
+	  echo "care-app existiert noch nicht — Frontend-Tests übersprungen"; \
+	fi
 	@$(MAKE) compliance-check
 	@$(MAKE) a11y-check
 
@@ -66,7 +70,9 @@ a11y-check:  ## WCAG-2.1-AA-Scan auf Care-App
 
 lint:  ## Ruff + Prettier + ESLint
 	$(COMPOSE) exec -T api ruff check .
-	$(COMPOSE) exec -T care-app npm run lint --silent
+	@if [ -f apps/care-app/package.json ]; then \
+	  $(COMPOSE) exec -T care-app npm run lint --silent; \
+	fi
 
 # ─── Autonomer Agent ──────────────────────────────────────────────────────
 daily-agent:  ## Manueller Trigger des täglichen Build-Cycles
