@@ -354,6 +354,32 @@ def git_revert_all() -> None:
     subprocess.run(["git", "-C", str(ROOT), "clean", "-fd"], check=False)
 
 
+def git_push_with_rebase() -> bool:
+    """Push mit Rebase-Retry.
+
+    Ohne das staut sich alles: schlägt ein Push fehl (origin einen Commit
+    voraus, z.B. nach manuellem Push vom Laptop), blieb der Commit früher
+    stumm lokal liegen — und jeder Folgetag scheiterte mit. So waren
+    2026-06-20 bis 2026-07-07 achtzehn Tage Reports gestaut.
+    """
+    for attempt in (1, 2):
+        p = subprocess.run(["git", "-C", str(ROOT), "push"], capture_output=True, text=True)
+        if p.returncode == 0:
+            return True
+        print(f"[git] push fehlgeschlagen (Versuch {attempt}): {p.stderr.strip()}")
+        rb = subprocess.run(
+            ["git", "-C", str(ROOT), "pull", "--rebase", "origin", "main"],
+            capture_output=True,
+            text=True,
+        )
+        if rb.returncode != 0:
+            subprocess.run(["git", "-C", str(ROOT), "rebase", "--abort"], check=False)
+            print(f"[git] rebase fehlgeschlagen — Commit bleibt lokal: {rb.stderr.strip()}")
+            return False
+    print("[git] push auch nach Rebase fehlgeschlagen — Commit bleibt lokal!")
+    return False
+
+
 def git_commit_push(message: str) -> bool:
     subprocess.run(["git", "-C", str(ROOT), "add", "-A"], check=True)
     r = subprocess.run(
@@ -367,11 +393,7 @@ def git_commit_push(message: str) -> bool:
             return False
         print(f"[git] commit failed: {r.stderr}")
         return False
-    p = subprocess.run(["git", "-C", str(ROOT), "push"], capture_output=True, text=True)
-    if p.returncode != 0:
-        print(f"[git] push failed: {p.stderr}")
-        return False
-    return True
+    return git_push_with_rebase()
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -527,7 +549,7 @@ async def main(argv: list[str]) -> int:
             check=False,
         )
         if not args.no_push:
-            subprocess.run(["git", "-C", str(ROOT), "push"], check=False)
+            git_push_with_rebase()
 
     print(f"[agent] done. budget: ${state.spent_usd:.4f}/${state.limit_usd:.2f}")
     return 0 if success else 2

@@ -42,7 +42,12 @@ LOCAL_HEAD=$(git rev-parse HEAD)
 REMOTE_HEAD=$(git rev-parse origin/main)
 if [[ "$LOCAL_HEAD" != "$REMOTE_HEAD" ]]; then
   echo "Pulling new commits from origin/main"
-  git pull --ff-only origin main
+  # --rebase statt --ff-only: nach gestauten lokalen Commits (Push-Fehler)
+  # würde ff-only hier abbrechen und der ganze Tages-Lauf entfiele
+  git pull --rebase origin main || {
+    git rebase --abort 2>/dev/null || true
+    echo "WARNUNG: pull --rebase fehlgeschlagen — arbeite auf lokalem Stand weiter"
+  }
 fi
 
 # ─── 2. Community-Beiträge ───────────────────────────────────

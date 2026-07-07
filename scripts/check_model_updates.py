@@ -199,7 +199,22 @@ async def main() -> int:
 
         f.write(f"\n---\n\n*Automatisch erstellt von check_model_updates.py*\n")
 
-    # 6. Wenn Wechsel: committen und pushen
+    # 6. Committen und pushen — Push mit Rebase-Retry, sonst stauen sich
+    # Commits still, sobald origin einen Commit voraus ist
+    def _push_with_rebase() -> None:
+        p = subprocess.run(["git", "-C", str(ROOT), "push"],
+                           capture_output=True, text=True)
+        if p.returncode == 0:
+            return
+        print(f"[model-check] push fehlgeschlagen, versuche rebase: {p.stderr.strip()}")
+        rb = subprocess.run(["git", "-C", str(ROOT), "pull", "--rebase", "origin", "main"],
+                            capture_output=True, text=True)
+        if rb.returncode != 0:
+            subprocess.run(["git", "-C", str(ROOT), "rebase", "--abort"], check=False)
+            print(f"[model-check] rebase fehlgeschlagen — Commit bleibt lokal: {rb.stderr.strip()}")
+            return
+        subprocess.run(["git", "-C", str(ROOT), "push"], check=False)
+
     if switch_happened:
         try:
             subprocess.run(["git", "-C", str(ROOT), "add",
@@ -207,7 +222,7 @@ async def main() -> int:
             subprocess.run(["git", "-C", str(ROOT), "commit", "-m",
                           f"chore(model): auto-update build model to {cfg['build_primary']}\n\n{switch_reason}"],
                          check=True)
-            subprocess.run(["git", "-C", str(ROOT), "push"], check=False)
+            _push_with_rebase()
             print("[model-check] committed + pushed")
         except subprocess.CalledProcessError as e:
             print(f"[model-check] git error: {e}")
@@ -217,7 +232,7 @@ async def main() -> int:
             subprocess.run(["git", "-C", str(ROOT), "add", str(report_path)], check=False)
             subprocess.run(["git", "-C", str(ROOT), "commit", "-m",
                           f"docs(model): weekly check {today} — no update needed"], check=False)
-            subprocess.run(["git", "-C", str(ROOT), "push"], check=False)
+            _push_with_rebase()
         except Exception:
             pass
 
