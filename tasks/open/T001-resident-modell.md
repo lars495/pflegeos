@@ -10,7 +10,7 @@ context_files:
 - tests/task_tests/test_t001_resident_model.py
 test_command: pytest -q tests/task_tests/test_t001_resident_model.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
 ---
 
 Lege das SQLAlchemy-2.0-Modell `Resident` an. Die Biografie steht im
