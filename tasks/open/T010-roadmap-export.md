@@ -4,13 +4,13 @@ title: Roadmap-Export als JSON für die Website
 roadmap_item: Public Roadmap-Tracker (autogeneriert)
 depends_on: []
 target_files:
-  - scripts/roadmap_export.py
+- scripts/roadmap_export.py
 context_files:
-  - ROADMAP.md
-  - tests/task_tests/test_t010_roadmap_export.py
+- ROADMAP.md
+- tests/task_tests/test_t010_roadmap_export.py
 test_command: pytest -q tests/task_tests/test_t010_roadmap_export.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
 ---
 
 Neue Datei `scripts/roadmap_export.py`: parst ROADMAP.md und schreibt
