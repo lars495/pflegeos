@@ -64,8 +64,12 @@ set +a
 export REDIS_URL="redis://:${REDIS_PASSWORD}@127.0.0.1:6379/0"
 
 # Python-Agent läuft auf dem Host (braucht git-Zugriff fürs Commit/Push)
+# pipefail temporär aus: Agent-Exit 2 (Task rot) darf NICHT das ganze
+# Skript killen — sonst läuft Deploy/Social nie (Bug: Image war 6 Wochen alt)
+set +o pipefail
 python3 scripts/build_agent.py 2>&1 | tee "$LOG_DIR/agent-$DATE.log"
 AGENT_EXIT=${PIPESTATUS[0]}
+set -o pipefail
 echo "[daily_agent] build_agent exit: $AGENT_EXIT"
 
 # ─── 4. Tests + Deploy (nur falls Agent etwas committed hat) ──

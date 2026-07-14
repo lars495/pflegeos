@@ -236,11 +236,26 @@ PLAN_RE = re.compile(r"===PLAN===\n(.*?)\n===(?:FILE|CHANGELOG)", re.DOTALL)
 CHANGELOG_RE = re.compile(r"===CHANGELOG===\n(.*?)\n===DONE===", re.DOTALL)
 
 
+def _strip_code_fences(content: str) -> str:
+    """Entfernt Markdown-Code-Fences, die kleine Modelle gern um den
+    Dateiinhalt legen (```python ... ```) — die landeten sonst als
+    Zeile 1 in der Datei und erzeugten SyntaxErrors (siehe T001, 07/2026)."""
+    lines = content.split("\n")
+    if lines and lines[0].strip().startswith("```"):
+        lines = lines[1:]
+    if lines and lines[-1].strip() == "```":
+        lines = lines[:-1]
+    return "\n".join(lines)
+
+
 def parse_response(text: str) -> tuple[str, dict[str, str], str]:
     """Liefert (plan, {pfad: inhalt}, changelog)."""
     plan_m = PLAN_RE.search(text)
     plan = plan_m.group(1).strip() if plan_m else ""
-    files = {m.group(1).strip(): m.group(2) for m in FILE_RE.finditer(text)}
+    files = {
+        m.group(1).strip(): _strip_code_fences(m.group(2))
+        for m in FILE_RE.finditer(text)
+    }
     cl_m = CHANGELOG_RE.search(text)
     changelog = cl_m.group(1).strip() if cl_m else ""
     return plan, files, changelog
@@ -553,6 +568,32 @@ async def main(argv: list[str]) -> int:
                 "content": f"Du hast keine der erlaubten target_files geschrieben. "
                            f"Erlaubt sind NUR: {', '.join(task.target_files)}. Erneut.",
             })
+            continue
+
+        # Syntax-Precheck: SyntaxError sofort klar zurückmelden statt den
+        # Umweg über einen kryptischen conftest-ImportError zu nehmen
+        syntax_errors = []
+        for rel in changed:
+            if rel.endswith(".py"):
+                try:
+                    compile((ROOT / rel).read_text(), rel, "exec")
+                except SyntaxError as e:
+                    syntax_errors.append(f"{rel}, Zeile {e.lineno}: {e.msg}\n  {e.text or ''}")
+        if syntax_errors:
+            print(f"[agent] Versuch {attempt}: SyntaxError")
+            test_log = "SyntaxError:\n" + "\n".join(syntax_errors)
+            if attempt < MAX_ATTEMPTS_PER_RUN:
+                messages.append({"role": "assistant", "content": raw[-6_000:]})
+                messages.append({
+                    "role": "user",
+                    "content": (
+                        "Deine Datei enthält einen SyntaxError:\n\n"
+                        + "\n".join(syntax_errors)
+                        + "\n\nHäufigste Ursache: Markdown-Zeichen wie ``` im Dateiinhalt. "
+                        "Gib die Datei erneut vollständig aus — NUR Code zwischen den "
+                        "===FILE:===- und ===END===-Markern, keine Code-Fences."
+                    ),
+                })
             continue
 
         ok, test_log = run_task_test(task)
