@@ -2,15 +2,17 @@
 id: T002
 title: Pydantic-Schemas für Residents
 roadmap_item: Bewohner-Profil mit Biografie (Lebensgeschichte, Beruf, Werte)
-depends_on: [T001]
+depends_on:
+- T001
 target_files:
-  - apps/api/schemas/resident.py
+- apps/api/schemas/resident.py
 context_files:
-  - apps/api/models/resident.py
-  - tests/task_tests/test_t002_resident_schemas.py
+- apps/api/models/resident.py
+- tests/task_tests/test_t002_resident_schemas.py
 test_command: pytest -q tests/task_tests/test_t002_resident_schemas.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-07-15'
 ---
 
 Lege drei Pydantic-v2-Schemas in `apps/api/schemas/resident.py` an:
