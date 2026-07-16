@@ -1,20 +1,22 @@
 ---
 id: T003
-title: "POST + GET /v1/residents Endpoints"
+title: POST + GET /v1/residents Endpoints
 roadmap_item: Bewohner-Profil mit Biografie (Lebensgeschichte, Beruf, Werte)
-depends_on: [T001, T002]
+depends_on:
+- T001
+- T002
 target_files:
-  - apps/api/routes/residents.py
-  - apps/api/main.py
+- apps/api/routes/residents.py
+- apps/api/main.py
 context_files:
-  - apps/api/models/resident.py
-  - apps/api/schemas/resident.py
-  - apps/api/routes/contribute.py
-  - apps/api/main.py
-  - tests/task_tests/test_t003_residents_endpoints.py
+- apps/api/models/resident.py
+- apps/api/schemas/resident.py
+- apps/api/routes/contribute.py
+- apps/api/main.py
+- tests/task_tests/test_t003_residents_endpoints.py
 test_command: pytest -q tests/task_tests/test_t003_residents_endpoints.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
 ---
 
 Lege `apps/api/routes/residents.py` an und registriere den Router in `main.py`.
