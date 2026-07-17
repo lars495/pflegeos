@@ -23,8 +23,8 @@ PflegeOS ist ein offenes Experiment: Eine Pflegesoftware, die von einer KI auton
 
 ### Tägliches Update
 Die KI baut jeden Tag etwas Neues und postet, was sie gelernt hat. Folge mit:
-- LinkedIn: *(folgt)*
-- X: *(folgt)*
+- Mastodon: *@pflegeos — Handle folgt in Kürze, automatisches tägliches Update*
+- LinkedIn: *(persönliche Posts des Betreibers)*
 
 ### Was hier wichtig ist zu lesen
 | Datei | Was darin steht |

@@ -467,6 +467,42 @@ def write_daily_report(
 |---|---|
 | LLM-Kosten | ${cost_usd:.4f} |
 | Status | {"committed" if success else "reverted"} |
+"""
+
+    # Fertiger LinkedIn-Text zum Kopieren (Rechenschafts-Prinzip, Säule 3).
+    # Mastodon postet automatisch — LinkedIn postet der menschliche Betreiber.
+    day_n = (dt.date.today() - dt.date(2026, 5, 26)).days + 1
+    if success:
+        li_hook = f"Heute hat die KI etwas geschafft: {task.title}."
+        li_body = changelog or plan or ""
+    else:
+        li_hook = f"Heute ist die KI gescheitert — an: {task.title}."
+        li_body = (
+            "Alle Versuche blieben rot, der Code wurde verworfen. "
+            "Auch das gehört zu diesem Experiment: Jeder Fehlschlag ist "
+            "öffentlich und wird dokumentiert."
+        )
+    body += f"""
+### LinkedIn-Text (zum Kopieren)
+
+```
+Tag {day_n} des PflegeOS-Experiments 🤖
+
+{li_hook}
+
+{li_body}
+
+Kosten heute: {cost_usd:.2f} $ von 1,10 $ Tagesbudget.
+
+Das Experiment: Eine KI (Hermes 4, offene Gewichte) baut täglich an einer
+personenzentrierten Pflegesoftware — maximal 1 € pro Tag, alles Open Source,
+jeder Fehlschlag öffentlich. Was dabei über KI-Entwicklung zu lernen ist,
+sammeln wir im Learnings-Log.
+
+👉 github.com/lars495/pflegeos
+
+#Pflege #KI #OpenSource #PflegeOS
+```
 
 ---
 
