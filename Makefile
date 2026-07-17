@@ -84,6 +84,9 @@ legal-audit:  ## Manueller Trigger des KI-Juristen
 process-contributions:  ## Bearbeitet inbox/ Community-Einreichungen
 	$(COMPOSE) exec -T api python scripts/process_contributions.py
 
+weekly-digest:  ## Wochen-Digest mit LinkedIn-Entwurf erzeugen
+	python3 scripts/weekly_digest.py
+
 post-update:  ## Postet $(TODAY)-Update zu LinkedIn + X
 	$(COMPOSE) exec -T api python scripts/post_update.py --date $(TODAY)
 

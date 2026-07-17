@@ -23,6 +23,8 @@ cat >> "$TMP" <<EOF
 0 3 * * * cd $ROOT && ./scripts/daily_agent.sh >> $ROOT/logs/daily.log 2>&1
 # PflegeOS: wöchentlicher Hermes-Modell-Update-Check (Montags 02:30 Berlin)
 30 2 * * 1 cd $ROOT && bash -c 'set -a; source infra/.env; set +a; export REDIS_URL="redis://:\$REDIS_PASSWORD@127.0.0.1:6379/0"; python3 scripts/check_model_updates.py' >> $ROOT/logs/model-check.log 2>&1
+# PflegeOS: wöchentlicher LinkedIn-Digest (Freitags 07:00 Berlin)
+0 7 * * 5 cd $ROOT && bash -c 'set -a; source infra/.env; set +a; export REDIS_URL="redis://:\$REDIS_PASSWORD@127.0.0.1:6379/0"; python3 scripts/weekly_digest.py' >> $ROOT/logs/weekly.log 2>&1
 # PflegeOS: monatlicher Legal-Audit (1. Tag des Monats, 02:00 Berlin)
 0 2 1 * * cd $ROOT && /usr/bin/make legal-audit >> $ROOT/logs/legal.log 2>&1
 # PflegeOS: tägliches Backup (04:00 Berlin)

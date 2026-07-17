@@ -49,7 +49,7 @@ Was das im Code bedeutet:
 - Akzeptierte Beiträge werden im CHANGELOG namentlich verdankt (mit Einwilligung des Einsenders).
 - Roadmap ist öffentlich. Was die KI als nächstes bauen wird, ist transparent.
 - Code ist Open Source (Lizenz TBD, voraussichtlich AGPL-3.0).
-- Tägliches Update auf LinkedIn/X ist verpflichtend — nicht Marketing, sondern Rechenschaft.
+- Tägliche öffentliche Rechenschaft ist verpflichtend: automatisches Tages-Update auf Mastodon ([@pflegeos@mastodon.social](https://mastodon.social/@pflegeos)) plus alle Berichte offen im Repo. Der Betreiber fasst wöchentlich auf LinkedIn zusammen — Qualität vor Frequenz, damit Rechenschaft nicht zu Lärm wird.
 
 **Schnelltest:** Könnte eine Pflegekraft aus einer fremden Einrichtung heute Abend einen Beitrag schicken, der morgen im Code landet? Wenn nicht: Offenheit ist verletzt.
 

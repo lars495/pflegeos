@@ -483,7 +483,7 @@ def write_daily_report(
             "öffentlich und wird dokumentiert."
         )
     body += f"""
-### LinkedIn-Text (zum Kopieren)
+### LinkedIn-Text (optional — nur für Meilenstein-Posts, Wochenrückblick kommt freitags)
 
 ```
 Tag {day_n} des PflegeOS-Experiments 🤖
