@@ -2,16 +2,18 @@
 id: T006
 title: AuditLog-ORM-Modell
 roadmap_item: Login + Rollen + Audit-Log
-depends_on: [T001]
+depends_on:
+- T001
 target_files:
-  - apps/api/models/audit.py
+- apps/api/models/audit.py
 context_files:
-  - apps/api/db.py
-  - apps/api/models/resident.py
-  - tests/task_tests/test_t006_audit_model.py
+- apps/api/db.py
+- apps/api/models/resident.py
+- tests/task_tests/test_t006_audit_model.py
 test_command: pytest -q tests/task_tests/test_t006_audit_model.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-07-19'
 ---
 
 Lege das Modell `AuditLog` in `apps/api/models/audit.py` an (Vorbild:
