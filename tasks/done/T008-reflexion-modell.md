@@ -2,15 +2,17 @@
 id: T008
 title: Reflexions-ORM-Modell
 roadmap_item: Reflexions-Tool (60-Sek nach Schicht)
-depends_on: [T001]
+depends_on:
+- T001
 target_files:
-  - apps/api/models/reflection.py
+- apps/api/models/reflection.py
 context_files:
-  - apps/api/models/resident.py
-  - tests/task_tests/test_t008_reflection_model.py
+- apps/api/models/resident.py
+- tests/task_tests/test_t008_reflection_model.py
 test_command: pytest -q tests/task_tests/test_t008_reflection_model.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-07-20'
 ---
 
 Modell `Reflection` in `apps/api/models/reflection.py` (Vorbild resident.py).
