@@ -3,12 +3,16 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from pydantic import BaseModel
 
 from apps.api.db import get_session
 from apps.api.models.resident import Resident
 from apps.api.schemas.resident import ResidentCreate, ResidentOut, ResidentUpdate
 
 router = APIRouter()
+
+class WunschIn(BaseModel):
+    wunsch: str
 
 @router.post("/residents", response_model=ResidentOut, status_code=201)
 async def create_resident(
@@ -52,3 +56,30 @@ async def update_resident(
     await session.commit()
     await session.refresh(obj)
     return obj
+
+@router.post("/residents/{resident_id}/wuensche", response_model=list[str])
+async def add_wunsch(
+    resident_id: str,
+    payload: WunschIn,
+    session: AsyncSession = Depends(get_session),
+) -> list[str]:
+    obj = await session.get(Resident, resident_id)
+    if not obj:
+        raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
+    
+    obj.wuensche = [*obj.wuensche, payload.wunsch]
+    await session.commit()
+    await session.refresh(obj)
+    return obj.wuensche
+
+@router.get("/residents/{resident_id}/wuensche", response_model=list[str])
+async def get_wuensche(
+    resident_id: str,
+    session: AsyncSession = Depends(get_session),
+) -> list[str]:
+    obj = await session.get(Resident, resident_id)
+    if not obj:
+        raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
+    
+    await session.refresh(obj)
+    return obj.wuensche
