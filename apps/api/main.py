@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from . import models  # noqa: F401 — registriert alle ORM-Modelle bei Base.metadata
 from .db import Base, engine
-from .routes import contribute, health, residents
+from .routes import contribute, health, residents, reflections
 
 
 @asynccontextmanager
@@ -45,6 +45,7 @@ app.add_middleware(
 app.include_router(health.router, tags=["meta"])
 app.include_router(contribute.router, prefix="/v1", tags=["community"])
 app.include_router(residents.router, prefix="/v1", tags=["residents"])
+app.include_router(reflections.router, prefix="/v1", tags=["reflexionen"])
 
 
 @app.get("/")
