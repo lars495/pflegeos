@@ -76,6 +76,9 @@ services:
       - ../reports:/app/reports
       - ../legal_requirements.yaml:/app/legal_requirements.yaml
       - ../pytest.ini:/app/pytest.ini
+      # Roadmap/Prinzipien: Skripte im Container lesen sie (z.B. roadmap_export)
+      - ../ROADMAP.md:/app/ROADMAP.md
+      - ../PRINCIPLES.md:/app/PRINCIPLES.md
     depends_on:
       db:
         condition: service_healthy
