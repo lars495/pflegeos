@@ -108,6 +108,42 @@ Gewohnheits-Frage. Konsequenz: automatisches Mastodon-Posting (offenes
 Netzwerk zu offenem Projekt) + täglich vorformulierter LinkedIn-Text für
 den menschlichen Betreiber.
 
+## L8 · Ein Wächter, der nur aufs Lebenszeichen schaut, sieht den Stillstand nicht (18.07.–27.08.)
+
+**Was passiert ist:** Nach dem Erfolg von T001/T002 blockierte T003 nach drei
+Läufen. Weil sechs der verbleibenden Tasks direkt oder indirekt von T003
+abhingen, stand ab dem 18. Juli der **komplette Backlog** — 40 Tage lang.
+Der Agent lief jede Nacht, schrieb brav einen Bericht und meldete darin
+"Backlog leer". Der Heartbeat aus L3 schlug nicht an, weil ja täglich ein
+Bericht erschien. Alles sah gesund aus.
+
+Die Ursache von T003 war wieder Umgebung, nicht Modell: `pytest.ini` mit
+`asyncio_mode = auto` lag weder im Docker-Image noch in den Bind-Mounts.
+Ohne sie **überspringt pytest alle async-Tests stillschweigend**. T003
+bestand nur aus async-Tests → "3 skipped" → dauerhaft rot.
+
+Schlimmer: T001, T006 und T008 galten als grün, obwohl ihre Persistenz-Tests
+nie liefen. Der Erfolg war zu einem Teil eine Illusion.
+
+**Erkenntnis:** Drei Fehlerklassen, die sich gegenseitig verdeckten:
+1. **Ein Überwachungssignal ist nur so gut wie die Frage, die es stellt.**
+   "Kommt täglich ein Bericht?" ist nicht dasselbe wie "kommt das Projekt
+   voran?". Der Heartbeat prüft jetzt auch, ob sich `tasks/done/` bewegt.
+2. **Abhängigkeitsketten machen aus einem Fehler einen Totalausfall.** Eine
+   einzige blockierte Task legte sechs weitere lahm. Der Agent meldet einen
+   solchen Stillstand jetzt ausdrücklich als solchen statt als "Backlog leer".
+3. **Übersprungene Tests sind keine bestandenen Tests.** Ein Task-Test gilt
+   nur noch ohne Skips als erfüllt.
+
+Nach der Behebung: T003 grün im **ersten** Versuch. Danach T004, T005, T007,
+T009, T011, T012 in Folge — sechs Tasks an einem Nachmittag für rund 5 Cent.
+T010 scheiterte danach noch neunmal, weil `ROADMAP.md` ebenfalls nicht im
+Container lag; mit der Datei war auch sie im ersten Versuch grün.
+
+**Die eigentliche Bilanz:** Von 12 Tasks scheiterte keine einzige am Modell.
+Alle Fehlschläge dieses Experiments gingen bisher auf unsere Werkzeugkette
+zurück — genau das, was L2 schon vermutete, hier zum dritten Mal bestätigt.
+
 ---
 
 ## Was ein echtes Produkt anders bräuchte
@@ -132,7 +168,9 @@ mit jedem Learning:
 5. **Betrieb ist mehr als Deployen.** Backups mit Wiederherstellungs-Tests,
    Monitoring, Incident-Prozesse, Support — der unsichtbare Teil, der in
    diesem Experiment monatelang kaputt sein konnte, ohne dass es jemandem
-   schadete. Bei echten Bewohnerdaten wäre jeder dieser Ausfälle ein
+   schadete. Überwachung muss dabei auf Fortschritt zielen, nicht auf
+   Lebenszeichen (L8) — sonst meldet das System 40 Tage Stillstand als
+   Normalbetrieb. Bei echten Bewohnerdaten wäre jeder dieser Ausfälle ein
    meldepflichtiger Vorfall gewesen.
 
 ---

@@ -21,11 +21,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Prüfe heutigen Daily Report
+      - name: Prüfe Lebenszeichen UND Fortschritt
         id: check
         run: |
           TODAY=$(TZ=Europe/Berlin date +%Y-%m-%d)
           echo "today=$TODAY" >> "$GITHUB_OUTPUT"
+
+          # 1. Lebenszeichen: kommt überhaupt ein Bericht?
           if [ -f "reports/daily/$TODAY.md" ]; then
             echo "✅ Report für $TODAY vorhanden — Agent lebt."
             echo "alive=true" >> "$GITHUB_OUTPUT"
@@ -34,8 +36,23 @@ jobs:
             echo "alive=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Issue öffnen falls Agent still
-        if: steps.check.outputs.alive == 'false'
+          # 2. Fortschritt: hat sich tasks/done/ in den letzten 10 Tagen bewegt?
+          #    Ohne diese Frage bleibt ein Stillstand unsichtbar, solange nur
+          #    brav Berichte erscheinen (L8: 40 Tage Stillstand, 07-08/2026).
+          SINCE=$(date -u -d "10 days ago" +%Y-%m-%d 2>/dev/null || date -u -v-10d +%Y-%m-%d)
+          MOVED=$(git log --since="$SINCE" --diff-filter=A --name-only --pretty=format: -- tasks/done/ | grep -c . || true)
+          OPEN=$(ls tasks/open/*.md 2>/dev/null | wc -l | tr -d " ")
+          echo "progress: $MOVED Tasks in 10 Tagen erledigt, $OPEN offen"
+          if [ "$MOVED" -eq 0 ] && [ "$OPEN" -gt 0 ]; then
+            echo "⛔ Stillstand: seit 10 Tagen keine Task erledigt, aber $OPEN offen."
+            echo "stalled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "stalled=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "open_count=$OPEN" >> "$GITHUB_OUTPUT"
+
+      - name: Issue öffnen falls Agent still oder blockiert
+        if: steps.check.outputs.alive == 'false' || steps.check.outputs.stalled == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           TODAY: ${{ steps.check.outputs.today }}
