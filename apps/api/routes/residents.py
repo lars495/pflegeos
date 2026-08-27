@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from apps.api.db import get_session
 from apps.api.models.resident import Resident
 from apps.api.schemas.resident import ResidentCreate, ResidentOut, ResidentUpdate
+from apps.api.audit import log_action
 
 router = APIRouter()
 
@@ -20,6 +21,14 @@ async def create_resident(
 ) -> Resident:
     obj = Resident(**payload.model_dump())
     session.add(obj)
+    await session.flush()
+    await log_action(
+        session,
+        actor="system",
+        action="resident.created",
+        resource_type="resident",
+        resource_id=obj.id,
+    )
     await session.commit()
     await session.refresh(obj)
     return obj
@@ -53,6 +62,13 @@ async def update_resident(
     for field, value in updates.items():
         setattr(obj, field, value)
     
+    await log_action(
+        session,
+        actor="system",
+        action="resident.updated",
+        resource_type="resident",
+        resource_id=resident_id,
+    )
     await session.commit()
     await session.refresh(obj)
     return obj

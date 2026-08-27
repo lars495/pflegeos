@@ -2,17 +2,20 @@
 id: T007
 title: Audit-Helper + Logging bei Resident-Änderungen
 roadmap_item: Login + Rollen + Audit-Log
-depends_on: [T005, T006]
+depends_on:
+- T005
+- T006
 target_files:
-  - apps/api/audit.py
-  - apps/api/routes/residents.py
+- apps/api/audit.py
+- apps/api/routes/residents.py
 context_files:
-  - apps/api/models/audit.py
-  - apps/api/routes/residents.py
-  - tests/task_tests/test_t007_audit_integration.py
+- apps/api/models/audit.py
+- apps/api/routes/residents.py
+- tests/task_tests/test_t007_audit_integration.py
 test_command: pytest -q tests/task_tests/test_t007_audit_integration.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-08-27'
 ---
 
 Zwei Schritte:
