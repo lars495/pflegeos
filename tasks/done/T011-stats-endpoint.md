@@ -1,18 +1,21 @@
 ---
 id: T011
-title: "GET /v1/stats — öffentliche Zahlen ohne Personenbezug"
+title: GET /v1/stats — öffentliche Zahlen ohne Personenbezug
 roadmap_item: Public Roadmap-Tracker (autogeneriert)
-depends_on: [T003, T009]
+depends_on:
+- T003
+- T009
 target_files:
-  - apps/api/routes/stats.py
-  - apps/api/main.py
+- apps/api/routes/stats.py
+- apps/api/main.py
 context_files:
-  - apps/api/routes/residents.py
-  - apps/api/main.py
-  - tests/task_tests/test_t011_stats_endpoint.py
+- apps/api/routes/residents.py
+- apps/api/main.py
+- tests/task_tests/test_t011_stats_endpoint.py
 test_command: pytest -q tests/task_tests/test_t011_stats_endpoint.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-08-27'
 ---
 
 Neue Datei `apps/api/routes/stats.py` + Registrierung in main.py
