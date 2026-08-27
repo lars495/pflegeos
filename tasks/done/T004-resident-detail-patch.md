@@ -1,17 +1,19 @@
 ---
 id: T004
-title: "GET /v1/residents/{id} + PATCH Teilupdate"
+title: GET /v1/residents/{id} + PATCH Teilupdate
 roadmap_item: Bewohner-Profil mit Biografie (Lebensgeschichte, Beruf, Werte)
-depends_on: [T003]
+depends_on:
+- T003
 target_files:
-  - apps/api/routes/residents.py
+- apps/api/routes/residents.py
 context_files:
-  - apps/api/routes/residents.py
-  - apps/api/schemas/resident.py
-  - tests/task_tests/test_t004_resident_detail_patch.py
+- apps/api/routes/residents.py
+- apps/api/schemas/resident.py
+- tests/task_tests/test_t004_resident_detail_patch.py
 test_command: pytest -q tests/task_tests/test_t004_resident_detail_patch.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-08-27'
 ---
 
 Erweitere `apps/api/routes/residents.py` um zwei Endpoints (bestehende
