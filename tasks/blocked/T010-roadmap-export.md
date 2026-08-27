@@ -10,7 +10,7 @@ context_files:
 - tests/task_tests/test_t010_roadmap_export.py
 test_command: pytest -q tests/task_tests/test_t010_roadmap_export.py
 max_attempts: 3
-attempts_used: 2
+attempts_used: 3
 ---
 
 Neue Datei `scripts/roadmap_export.py`: parst ROADMAP.md und schreibt
