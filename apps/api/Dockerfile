@@ -21,6 +21,10 @@ COPY apps/api /app/apps/api
 COPY packages /app/packages
 COPY scripts /app/scripts
 COPY legal_requirements.yaml /app/legal_requirements.yaml
+# pytest.ini trägt asyncio_mode=auto — ohne sie werden ALLE async-Tests
+# stillschweigend übersprungen (Ursache der T003-Blockade, 07/2026)
+COPY pytest.ini /app/pytest.ini
+COPY tests /app/tests
 
 ENV PYTHONPATH=/app
 

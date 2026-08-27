@@ -75,6 +75,7 @@ services:
       - ../contributions:/app/contributions
       - ../reports:/app/reports
       - ../legal_requirements.yaml:/app/legal_requirements.yaml
+      - ../pytest.ini:/app/pytest.ini
     depends_on:
       db:
         condition: service_healthy

@@ -130,12 +130,29 @@ def done_task_ids() -> set[str]:
     return {p.name.split("-")[0] for p in TASKS_DONE.glob("T*.md")}
 
 
-def select_task() -> Task | None:
-    """Niedrigste offene Task-ID, deren Abhängigkeiten erledigt sind."""
+def blocked_task_ids() -> set[str]:
+    if not TASKS_BLOCKED.exists():
+        return set()
+    return {p.name.split("-")[0] for p in TASKS_BLOCKED.glob("T*.md")}
+
+
+def select_task() -> tuple[Task | None, str]:
+    """Niedrigste offene Task-ID, deren Abhängigkeiten erledigt sind.
+
+    Liefert (task, grund). grund erklärt, WARUM nichts gewählt wurde:
+      "empty"   — tasks/open/ ist wirklich leer, Nachschub nötig
+      "blocked" — es gibt offene Tasks, aber alle warten auf blockierte
+                  Vorgänger. Das ist ein Stillstand, kein leerer Backlog!
+                  (Verschleierte den Projektstillstand 18.07.–27.08.2026)
+    """
     if not TASKS_OPEN.exists():
-        return None
+        return None, "empty"
+    open_paths = sorted(TASKS_OPEN.glob("T*.md"))
+    if not open_paths:
+        return None, "empty"
+
     done = done_task_ids()
-    for path in sorted(TASKS_OPEN.glob("T*.md")):
+    for path in open_paths:
         task = parse_task(path)
         if task is None:
             continue
@@ -143,8 +160,8 @@ def select_task() -> Task | None:
         if missing:
             print(f"[tasks] {task.id} wartet auf {missing}")
             continue
-        return task
-    return None
+        return task, "ok"
+    return None, "blocked"
 
 
 def update_task_frontmatter(task: Task, **updates) -> None:
@@ -358,6 +375,16 @@ def run_task_test(task: Task) -> tuple[bool, str]:
     if not re.search(r"\d+ passed", out):
         log.append("[FAIL] Test lief, aber nichts ist 'passed' (nur Skips?)")
         return False, "\n".join(log)
+    m_skip = re.search(r"(\d+) skipped", out)
+    if m_skip and int(m_skip.group(1)) > 0:
+        # Ein umgesetzter Task darf keine Skips mehr haben — sonst greift
+        # entweder ein importorskip-Guard oder pytest-asyncio ist inaktiv
+        # (fehlende pytest.ini ließ async-Tests monatelang still durchrutschen)
+        log.append(
+            f"[FAIL] {m_skip.group(1)} Test(s) übersprungen — Task gilt erst "
+            "als erledigt, wenn ALLE Tests des Task-Files laufen"
+        )
+        return False, "\n".join(log)
     log.append("[ok]")
     return True, "\n".join(log)
 
@@ -426,12 +453,25 @@ def write_daily_report(
     p.parent.mkdir(parents=True, exist_ok=True)
 
     if task is None:
-        p.write_text(
-            f"# Tag — {today}\n\n"
-            "## Backlog leer\n\n"
-            "Keine offene Task in tasks/open/. Es wird Nachschub aus der "
-            "Roadmap gebraucht (monatliche Zerlegung, siehe tasks/README.md).\n"
-        )
+        if test_log == "blocked":
+            blocked = sorted(blocked_task_ids())
+            waiting = sorted(p.name.split("-")[0] for p in TASKS_OPEN.glob("T*.md"))
+            p.write_text(
+                f"# Tag — {today}\n\n"
+                "## ⛔ Stillstand — alle Tasks warten auf blockierte Vorgänger\n\n"
+                f"Blockiert: **{', '.join(blocked) or '—'}**\n\n"
+                f"Wartend: {', '.join(waiting) or '—'}\n\n"
+                "Der Agent kann nichts tun, bis die blockierten Tasks von Hand "
+                "gelöst werden (siehe tasks/README.md). **Menschliches Eingreifen "
+                "nötig.**\n"
+            )
+        else:
+            p.write_text(
+                f"# Tag — {today}\n\n"
+                "## Backlog leer\n\n"
+                "Keine offene Task in tasks/open/. Es wird Nachschub aus der "
+                "Roadmap gebraucht (monatliche Zerlegung, siehe tasks/README.md).\n"
+            )
         return p
 
     icon = "✅" if success else "⛔"
@@ -531,12 +571,13 @@ async def main(argv: list[str]) -> int:
         return 0
 
     # 1. Task wählen
-    task = select_task()
+    task, reason = select_task()
     if task is None:
-        print("[agent] Backlog leer — Report + Ende")
+        msg = "Backlog leer" if reason == "empty" else "STILLSTAND: alle Tasks blockiert"
+        print(f"[agent] {msg} — Report + Ende")
         if not args.dry_run:
-            report = write_daily_report(None, "", "", False, "", 0.0, 0, False)
-            git_commit(f"docs(daily): report {dt.date.today().isoformat()} (Backlog leer)")
+            report = write_daily_report(None, "", "", False, reason, 0.0, 0, False)
+            git_commit(f"docs(daily): report {dt.date.today().isoformat()} ({msg})")
             if not args.no_push:
                 git_push_with_rebase()
             print(f"[agent] report: {report}")
