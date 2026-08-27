@@ -16,7 +16,8 @@ context_files:
 - tests/task_tests/test_t003_residents_endpoints.py
 test_command: pytest -q tests/task_tests/test_t003_residents_endpoints.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-08-27'
 ---
 
 Lege `apps/api/routes/residents.py` an und registriere den Router in `main.py`.
