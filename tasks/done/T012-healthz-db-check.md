@@ -2,16 +2,18 @@
 id: T012
 title: /healthz prüft die Datenbank mit
 roadmap_item: Stamm-Datenbankschema + Migrations-Setup
-depends_on: [T003]
+depends_on:
+- T003
 target_files:
-  - apps/api/routes/health.py
+- apps/api/routes/health.py
 context_files:
-  - apps/api/routes/health.py
-  - apps/api/routes/residents.py
-  - tests/task_tests/test_t012_healthz_db.py
+- apps/api/routes/health.py
+- apps/api/routes/residents.py
+- tests/task_tests/test_t012_healthz_db.py
 test_command: pytest -q tests/task_tests/test_t012_healthz_db.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-08-27'
 ---
 
 Erweitere `GET /healthz` in `apps/api/routes/health.py`:
