@@ -144,6 +144,32 @@ Container lag; mit der Datei war auch sie im ersten Versuch grün.
 Alle Fehlschläge dieses Experiments gingen bisher auf unsere Werkzeugkette
 zurück — genau das, was L2 schon vermutete, hier zum dritten Mal bestätigt.
 
+## L9 · Grüne Tests heißen nicht, dass jemand die Funktion benutzen kann (27.08.)
+
+**Was passiert ist:** Die erste sichtbare Oberfläche entstand an einem
+Nachmittag — sieben Aufgaben, sechs davon im ersten Versuch richtig, zusammen
+rund ein Cent. Alle Tests grün. Beim ersten Blick auf die fertige Seite fehlten
+trotzdem zwei Bedienelemente: Die Biografie ließ sich nicht bearbeiten und
+Wünsche nicht eintragen.
+
+Der Grund lag in der Aufgabenstellung, nicht im Modell: Beide Aufgaben
+beschrieben, dass die neuen Bausteine in die Profilseite einzubinden sind — die
+Profilseite stand aber nicht in der Liste der Dateien, die verändert werden
+durften. Das Modell hielt sich korrekt an die Regel. Die Tests prüften die
+Endpunkte, nicht die Erreichbarkeit.
+
+**Erkenntnis:** Eine Funktion existiert erst, wenn ein Mensch sie erreichen
+kann. Tests, die nur Endpunkte abfragen, bestätigen Bausteine — nicht
+Benutzbarkeit. Seitdem gibt es eine eigene Testdatei dafür (`test_ui_bedienbar.py`):
+Sind die Bedienelemente auf der Seite? Ist HTMX geladen? Führt jeder
+Navigationslink irgendwohin? Und: **Einmal selbst hinschauen** bleibt durch
+nichts zu ersetzen — kein Testlauf hätte diese Lücke gemeldet.
+
+Zweite Beobachtung desselben Tages: Der laufende Server kannte den neuen Code
+nicht, obwohl die Dateien da waren — Python lädt Module beim Start. Der
+nächtliche Ablauf startet den Dienst nach dem Bauen neu; bei manuellen Läufen
+fehlt dieser Schritt und man testet gegen den Stand von vorgestern.
+
 ---
 
 ## Was ein echtes Produkt anders bräuchte
