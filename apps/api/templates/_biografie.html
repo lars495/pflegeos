@@ -1,0 +1,15 @@
+<div id="biografie-block">
+  {% if bearbeiten %}
+    <form hx-post="/ui/bewohner/{{ person.id }}/biografie"
+          hx-target="#biografie-block" hx-swap="outerHTML">
+      <label for="biografie">Lebensgeschichte</label>
+      <textarea id="biografie" name="biografie">{{ person.biografie }}</textarea>
+      <button type="submit" class="btn">Speichern</button>
+    </form>
+  {% else %}
+    <div class="biografie">{{ person.biografie }}</div>
+    <button class="btn-secondary"
+            hx-get="/ui/bewohner/{{ person.id }}/biografie"
+            hx-target="#biografie-block" hx-swap="outerHTML">Bearbeiten</button>
+  {% endif %}
+</div>

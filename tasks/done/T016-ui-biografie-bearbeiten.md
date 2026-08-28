@@ -2,17 +2,19 @@
 id: T016
 title: Biografie direkt auf der Seite bearbeiten
 roadmap_item: Bewohner-Profil mit Biografie (Lebensgeschichte, Beruf, Werte)
-depends_on: [T014]
+depends_on:
+- T014
 target_files:
-  - apps/api/templates/_biografie.html
-  - apps/api/web.py
+- apps/api/templates/_biografie.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/templates/bewohner_detail.html
-  - tests/task_tests/test_t016_ui_biografie_bearbeiten.py
+- apps/api/web.py
+- apps/api/templates/bewohner_detail.html
+- tests/task_tests/test_t016_ui_biografie_bearbeiten.py
 test_command: pytest -q tests/task_tests/test_t016_ui_biografie_bearbeiten.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-08-28'
 ---
 
 Die Biografie soll ohne Seitenwechsel bearbeitbar sein (HTMX). Es entsteht ein

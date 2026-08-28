@@ -96,3 +96,32 @@ async def ui_bewohner_detail(
     if person is None:
         raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
     return templates.TemplateResponse(request, "bewohner_detail.html", {"person": person})
+
+
+@router.get("/ui/bewohner/{resident_id}/biografie", response_class=HTMLResponse)
+async def ui_biografie_formular(
+    resident_id: str, request: Request, session: AsyncSession = Depends(get_session)
+):
+    person = await session.get(Resident, resident_id)
+    if person is None:
+        raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
+    return templates.TemplateResponse(
+        request, "_biografie.html", {"person": person, "bearbeiten": True}
+    )
+
+
+@router.post("/ui/bewohner/{resident_id}/biografie", response_class=HTMLResponse)
+async def ui_biografie_speichern(
+    resident_id: str, request: Request,
+    biografie: str = Form(""),
+    session: AsyncSession = Depends(get_session),
+):
+    person = await session.get(Resident, resident_id)
+    if person is None:
+        raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
+    person.biografie = biografie.strip()
+    await session.commit()
+    await session.refresh(person)
+    return templates.TemplateResponse(
+        request, "_biografie.html", {"person": person, "bearbeiten": False}
+    )
