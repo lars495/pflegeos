@@ -2,18 +2,20 @@
 id: T014
 title: Bewohner-Profil als Webseite (Biografie im Mittelpunkt)
 roadmap_item: Bewohner-Profil mit Biografie (Lebensgeschichte, Beruf, Werte)
-depends_on: [T013]
+depends_on:
+- T013
 target_files:
-  - apps/api/templates/bewohner_detail.html
-  - apps/api/web.py
+- apps/api/templates/bewohner_detail.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/templates/bewohner_liste.html
-  - apps/api/models/resident.py
-  - tests/task_tests/test_t014_ui_bewohner_detail.py
+- apps/api/web.py
+- apps/api/templates/bewohner_liste.html
+- apps/api/models/resident.py
+- tests/task_tests/test_t014_ui_bewohner_detail.py
 test_command: pytest -q tests/task_tests/test_t014_ui_bewohner_detail.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-08-28'
 ---
 
 Die Profilseite unter `/ui/bewohner/{resident_id}`. **Wichtigste Regel aus

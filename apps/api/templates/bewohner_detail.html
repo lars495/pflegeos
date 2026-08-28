@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}PflegeOS — {{ person.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header">
+    <span class="avatar">{{ person.name|initialen }}</span>
+    <h1>{{ person.name }}</h1>
+    {% if person.zimmer or person.geburtsdatum %}
+      <p class="muted">
+        {% if person.zimmer %}Zimmer {{ person.zimmer }}{% endif %}
+        {% if person.zimmer and person.geburtsdatum %}, {% endif %}
+        {% if person.geburtsdatum %}geb. am {{ person.geburtsdatum }}{% endif %}
+      </p>
+    {% endif %}
+  </div>
+
+  {% if person.biografie %}
+    <div class="biografie">
+      <h2>Wer ich bin</h2>
+      <div>{{ person.biografie }}</div>
+    </div>
+  {% endif %}
+
+  <div class="wunsch-liste">
+    <h2>Meine Wünsche</h2>
+    {% if person.wuensche %}
+      <ul>
+        {% for wunsch in person.wuensche %}
+          <li>{{ wunsch }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="leer">Noch keine Wünsche hinzugefügt.</p>
+    {% endif %}
+  </div>
+
+  <a href="/ui/bewohner" class="btn-secondary">Zurück zur Liste</a>
+</div>
+{% endblock %}

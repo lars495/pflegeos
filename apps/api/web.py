@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import func, select
@@ -61,3 +61,13 @@ async def ui_bewohner_liste(request: Request, session: AsyncSession = Depends(ge
     result = await session.execute(select(Resident).order_by(Resident.name))
     bewohner = result.scalars().all()
     return templates.TemplateResponse(request, "bewohner_liste.html", {"bewohner": bewohner})
+
+
+@router.get("/ui/bewohner/{resident_id}", response_class=HTMLResponse)
+async def ui_bewohner_detail(
+    resident_id: str, request: Request, session: AsyncSession = Depends(get_session)
+):
+    person = await session.get(Resident, resident_id)
+    if person is None:
+        raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
+    return templates.TemplateResponse(request, "bewohner_detail.html", {"person": person})
