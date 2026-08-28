@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}PflegeOS — Bewohner:innen{% endblock %}
+
+{% block content %}
+<h1>Bewohner:innen</h1>
+
+{% if not bewohner %}
+  <p class="leer">Hier wohnt noch niemand.</p>
+{% else %}
+  <ul class="person-list">
+    {% for p in bewohner %}
+      <li>
+        <a class="person-card" href="/ui/bewohner/{{ p.id }}">
+          <span class="avatar">{{ p.name|initialen }}</span>
+          <h3>{{ p.name }}</h3>
+          {% if p.zimmer %}
+            <p class="muted">Zimmer {{ p.zimmer }}</p>
+          {% endif %}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<a href="/ui/bewohner/neu" class="btn">Person hinzufügen</a>
+{% endblock %}

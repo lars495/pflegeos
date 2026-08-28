@@ -4,16 +4,17 @@ title: Bewohner-Übersicht als Webseite
 roadmap_item: Bewohner-Profil mit Biografie (Lebensgeschichte, Beruf, Werte)
 depends_on: []
 target_files:
-  - apps/api/templates/bewohner_liste.html
-  - apps/api/web.py
+- apps/api/templates/bewohner_liste.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/templates/index.html
-  - apps/api/models/resident.py
-  - tests/task_tests/test_t013_ui_bewohner_liste.py
+- apps/api/web.py
+- apps/api/templates/index.html
+- apps/api/models/resident.py
+- tests/task_tests/test_t013_ui_bewohner_liste.py
 test_command: pytest -q tests/task_tests/test_t013_ui_bewohner_liste.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-08-28'
 ---
 
 Erste sichtbare Seite: die Übersicht aller Bewohner:innen unter `/ui/bewohner`.

@@ -54,3 +54,10 @@ async def ui_start(request: Request, session: AsyncSession = Depends(get_session
     return templates.TemplateResponse(
         request, "index.html", {"anzahl_bewohner": anzahl or 0}
     )
+
+
+@router.get("/ui/bewohner", response_class=HTMLResponse)
+async def ui_bewohner_liste(request: Request, session: AsyncSession = Depends(get_session)):
+    result = await session.execute(select(Resident).order_by(Resident.name))
+    bewohner = result.scalars().all()
+    return templates.TemplateResponse(request, "bewohner_liste.html", {"bewohner": bewohner})
