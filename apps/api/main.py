@@ -7,12 +7,15 @@ from __future__ import annotations
 
 import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from . import models  # noqa: F401 — registriert alle ORM-Modelle bei Base.metadata
 from .db import Base, engine
+from . import web
 from .routes import contribute, health, residents, reflections, stats
 
 
@@ -47,6 +50,11 @@ app.include_router(contribute.router, prefix="/v1", tags=["community"])
 app.include_router(residents.router, prefix="/v1", tags=["residents"])
 app.include_router(reflections.router, prefix="/v1", tags=["reflexionen"])
 app.include_router(stats.router, prefix="/v1", tags=["meta"])
+
+# Pflege-Oberfläche (servergerendertes HTML unter /ui) + lokale Assets.
+# HTMX liegt unter /static — bewusst kein CDN, es verlässt keine Anfrage den Server.
+app.mount("/static", StaticFiles(directory=str(Path(__file__).parent / "static")), name="static")
+app.include_router(web.router, tags=["oberfläche"])
 
 
 @app.get("/")

@@ -1,0 +1,159 @@
+/* PflegeOS Pflege-Oberfläche
+   Grundsatz: lesbar am Ende einer Schicht, bedienbar mit müden Augen.
+   Alle Werte hier sind bewusst großzügig — nicht "kompakt und modern". */
+
+:root {
+  --fg:        #1a1a1a;
+  --muted:     #4a4a4a;      /* 8.9:1 auf Weiß — WCAG AA auch für kleinen Text */
+  --bg:        #fdfdfb;
+  --card:      #ffffff;
+  --line:      #d8d8d2;
+  --accent:    #2d6a4f;      /* 5.8:1 auf Weiß */
+  --accent-dk: #1f4d39;
+  --accent-lt: #e8f5e9;
+  --warn:      #8a5a00;
+  --warn-lt:   #fff8e1;
+  --danger:    #a8261b;
+  --radius:    10px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 18px;              /* Grundgröße, nie kleiner */
+  line-height: 1.6;
+  color: var(--fg);
+  background: var(--bg);
+}
+
+/* Tastatur-Nutzung sichtbar machen (Pflegekräfte arbeiten oft ohne Maus) */
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.skip-link {
+  position: absolute; left: -9999px;
+  background: var(--accent); color: #fff; padding: .75rem 1rem;
+}
+.skip-link:focus { left: 0; top: 0; z-index: 100; }
+
+/* ── Kopfzeile ─────────────────────────────────────────── */
+.topbar {
+  display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  padding: 1rem 1.5rem;
+  background: var(--card);
+  border-bottom: 2px solid var(--line);
+}
+.logo { font-weight: 700; font-size: 1.25rem; color: var(--accent); text-decoration: none; }
+.topbar nav { display: flex; gap: 1.25rem; }
+.topbar nav a {
+  color: var(--fg); text-decoration: none;
+  padding: .5rem .25rem; border-bottom: 3px solid transparent;
+}
+.topbar nav a:hover { border-bottom-color: var(--accent); }
+.demo-badge {
+  margin-left: auto; font-size: .9rem;
+  background: var(--warn-lt); color: var(--warn);
+  border: 1px solid currentColor; border-radius: var(--radius);
+  padding: .25rem .75rem;
+}
+
+main { max-width: 60rem; margin: 0 auto; padding: 1.5rem; }
+
+h1 { font-size: 1.9rem; margin: 0 0 .25rem; }
+h2 { font-size: 1.4rem; margin: 2rem 0 .75rem; }
+h3 { font-size: 1.15rem; margin: 0 0 .5rem; }
+p  { margin: .5rem 0; }
+
+.lead  { font-size: 1.15rem; color: var(--muted); margin-bottom: 1.5rem; }
+.muted { color: var(--muted); font-size: .95rem; }
+
+/* ── Karten & Listen ───────────────────────────────────── */
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem;
+}
+
+.person-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; }
+
+.person-card {
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 1rem 1.25rem;
+  text-decoration: none; color: inherit;
+}
+.person-card:hover { border-color: var(--accent); background: var(--accent-lt); }
+
+.avatar {
+  width: 56px; height: 56px; flex-shrink: 0;
+  border-radius: 50%; background: var(--accent-lt); color: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 1.2rem;
+}
+
+/* ── Biografie: das Herzstück, optisch hervorgehoben ───── */
+.biografie {
+  background: var(--accent-lt);
+  border-left: 5px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 1rem 1.25rem; font-size: 1.1rem;
+}
+.biografie:empty::before { content: "Noch keine Lebensgeschichte hinterlegt."; color: var(--muted); }
+
+.wunsch-liste { list-style: none; padding: 0; margin: .5rem 0; display: grid; gap: .5rem; }
+.wunsch-liste li {
+  background: var(--accent-lt); border-radius: var(--radius);
+  padding: .6rem .9rem;
+}
+.wunsch-liste li::before { content: "💚 "; }
+
+/* ── Formulare & Knöpfe (mind. 44px Trefferfläche) ─────── */
+label { display: block; font-weight: 600; margin: 1rem 0 .35rem; }
+
+input[type="text"], input[type="date"], textarea, select {
+  width: 100%; font: inherit; padding: .7rem .8rem;
+  border: 2px solid var(--line); border-radius: var(--radius);
+  background: #fff; color: var(--fg);
+}
+input:focus, textarea:focus { border-color: var(--accent); }
+textarea { min-height: 7rem; resize: vertical; }
+
+.btn, button {
+  font: inherit; font-weight: 600; cursor: pointer;
+  min-height: 44px; padding: .65rem 1.25rem;
+  border-radius: var(--radius); border: 2px solid var(--accent);
+  background: var(--accent); color: #fff;
+  display: inline-flex; align-items: center; gap: .4rem;
+  text-decoration: none;
+}
+.btn:hover, button:hover { background: var(--accent-dk); border-color: var(--accent-dk); }
+
+.btn-secondary {
+  background: #fff; color: var(--accent);
+}
+.btn-secondary:hover { background: var(--accent-lt); color: var(--accent-dk); }
+
+/* ── Rückmeldungen ─────────────────────────────────────── */
+.hinweis {
+  background: var(--warn-lt); border: 1px solid var(--warn); color: var(--warn);
+  border-radius: var(--radius); padding: .75rem 1rem; margin: 1rem 0;
+}
+.erfolg {
+  background: var(--accent-lt); border: 1px solid var(--accent); color: var(--accent-dk);
+  border-radius: var(--radius); padding: .75rem 1rem; margin: 1rem 0;
+}
+.leer { color: var(--muted); font-style: italic; padding: 2rem 0; text-align: center; }
+
+/* HTMX: laufende Anfrage sichtbar machen */
+.htmx-request { opacity: .6; }
+
+.footer {
+  max-width: 60rem; margin: 2rem auto 0; padding: 1.5rem;
+  border-top: 1px solid var(--line); color: var(--muted); font-size: .95rem;
+}
+
+@media (max-width: 40rem) {
+  .topbar { gap: .75rem; padding: .75rem 1rem; }
+  main { padding: 1rem; }
+  h1 { font-size: 1.6rem; }
+}

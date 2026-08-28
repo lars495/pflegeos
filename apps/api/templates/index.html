@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}PflegeOS — Start{% endblock %}
+
+{% block content %}
+<h1>Willkommen</h1>
+<p class="lead">
+  Diese Oberfläche entsteht Stück für Stück — gebaut von einer KI,
+  jeden Tag ein bisschen mehr.
+</p>
+
+<div class="hinweis">
+  <strong>Experiment.</strong> Bitte keine echten Bewohnerdaten eingeben.
+  Alles hier ist zum Ausprobieren gedacht.
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">Bewohner:innen</h2>
+  <p>
+    {% if anzahl_bewohner == 0 %}
+      Noch niemand angelegt.
+    {% elif anzahl_bewohner == 1 %}
+      Eine Person ist angelegt.
+    {% else %}
+      {{ anzahl_bewohner }} Personen sind angelegt.
+    {% endif %}
+  </p>
+  <a href="/ui/bewohner" class="btn">Zur Übersicht</a>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">Meine Reflexion</h2>
+  <p>
+    60 Sekunden nach der Schicht — für dich, nicht für die Akte.
+  </p>
+  <a href="/ui/reflexion" class="btn btn-secondary">Reflexion schreiben</a>
+</div>
+{% endblock %}

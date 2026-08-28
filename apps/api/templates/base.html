@@ -1,0 +1,44 @@
+{# Basis-Layout für alle Pflege-Oberflächen.
+
+   Gestaltungsregeln (aus PRINCIPLES.md abgeleitet, für alle Seiten verbindlich):
+   - Grundschriftgröße 18px, Fließtext 1.125rem — lesbar auch bei müden Augen
+     am Ende einer Schicht und auf schlechten Bildschirmen
+   - Bedienelemente mindestens 44x44px (Touch, auch mit Handschuhen)
+   - Kontrast mindestens 4.5:1 (WCAG 2.1 AA)
+   - Keine externen Ressourcen: HTMX liegt lokal, keine Web-Fonts, kein CDN.
+     Es verlässt keine Anfrage den Server — Grundvoraussetzung bei Gesundheitsdaten.
+#}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{% block title %}PflegeOS{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/htmx.min.js" defer></script>
+</head>
+<body>
+  <a href="#inhalt" class="skip-link">Zum Inhalt springen</a>
+
+  <header class="topbar">
+    <a href="/ui" class="logo">PflegeOS</a>
+    <nav aria-label="Hauptnavigation">
+      <a href="/ui/bewohner">Bewohner:innen</a>
+      <a href="/ui/reflexion">Meine Reflexion</a>
+    </nav>
+    <span class="demo-badge" title="Diese Software ist ein Experiment">Experiment</span>
+  </header>
+
+  <main id="inhalt">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <p>
+      PflegeOS — ein offenes Experiment. Bitte keine echten Bewohnerdaten eingeben.
+      <a href="https://github.com/lars495/pflegeos">Code &amp; Learnings</a>
+    </p>
+  </footer>
+</body>
+</html>
