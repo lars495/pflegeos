@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}PflegeOS — Neue Person aufnehmen{% endblock %}
+
+{% block content %}
+<h1>Neue Person aufnehmen</h1>
+
+{% if fehler %}
+  <p class="hinweis">{{ fehler }}</p>
+{% endif %}
+
+<form method="post">
+  <label for="name">Wie heißt die Person?</label>
+  <input type="text" id="name" name="name" required class="form-control">
+  
+  <label for="zimmer">Zimmer</label>
+  <input type="text" id="zimmer" name="zimmer" class="form-control">
+  
+  <label for="biografie">Was sollte man über sie wissen?</label>
+  <textarea id="biografie" name="biografie" class="form-control"></textarea>
+  
+  <button type="submit" class="btn">Person aufnehmen</button>
+</form>
+{% endblock %}

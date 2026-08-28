@@ -19,8 +19,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, Request, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Depends, Request, HTTPException, Form
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -61,6 +61,31 @@ async def ui_bewohner_liste(request: Request, session: AsyncSession = Depends(ge
     result = await session.execute(select(Resident).order_by(Resident.name))
     bewohner = result.scalars().all()
     return templates.TemplateResponse(request, "bewohner_liste.html", {"bewohner": bewohner})
+
+
+@router.get("/ui/bewohner/neu", response_class=HTMLResponse)
+async def ui_bewohner_neu_formular(request: Request):
+    return templates.TemplateResponse(request, "bewohner_neu.html", {})
+
+
+@router.post("/ui/bewohner/neu")
+async def ui_bewohner_neu_speichern(
+    request: Request,
+    name: str = Form(""),
+    zimmer: str = Form(""),
+    biografie: str = Form(""),
+    session: AsyncSession = Depends(get_session),
+):
+    if not name.strip():
+        return templates.TemplateResponse(
+            request, "bewohner_neu.html",
+            {"fehler": "Bitte einen Namen eingeben."},
+        )
+    person = Resident(name=name.strip(), zimmer=zimmer.strip() or None,
+                      biografie=biografie.strip())
+    session.add(person)
+    await session.commit()
+    return RedirectResponse(f"/ui/bewohner/{person.id}", status_code=303)
 
 
 @router.get("/ui/bewohner/{resident_id}", response_class=HTMLResponse)

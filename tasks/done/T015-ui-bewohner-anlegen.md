@@ -2,18 +2,20 @@
 id: T015
 title: Neue Person anlegen (Formular)
 roadmap_item: Bewohner-Profil mit Biografie (Lebensgeschichte, Beruf, Werte)
-depends_on: [T013]
+depends_on:
+- T013
 target_files:
-  - apps/api/templates/bewohner_neu.html
-  - apps/api/web.py
+- apps/api/templates/bewohner_neu.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/templates/bewohner_liste.html
-  - apps/api/models/resident.py
-  - tests/task_tests/test_t015_ui_bewohner_anlegen.py
+- apps/api/web.py
+- apps/api/templates/bewohner_liste.html
+- apps/api/models/resident.py
+- tests/task_tests/test_t015_ui_bewohner_anlegen.py
 test_command: pytest -q tests/task_tests/test_t015_ui_bewohner_anlegen.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-08-28'
 ---
 
 Formular unter `/ui/bewohner/neu` — GET zeigt es, POST legt an.
