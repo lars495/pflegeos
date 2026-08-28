@@ -4,16 +4,17 @@ title: Reflexion nach der Schicht (Formular)
 roadmap_item: Reflexions-Tool (60-Sek nach Schicht)
 depends_on: []
 target_files:
-  - apps/api/templates/reflexion.html
-  - apps/api/web.py
+- apps/api/templates/reflexion.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/models/reflection.py
-  - apps/api/templates/index.html
-  - tests/task_tests/test_t018_ui_reflexion.py
+- apps/api/web.py
+- apps/api/models/reflection.py
+- apps/api/templates/index.html
+- tests/task_tests/test_t018_ui_reflexion.py
 test_command: pytest -q tests/task_tests/test_t018_ui_reflexion.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 2
+completed_at: '2026-08-28'
 ---
 
 Das Reflexions-Werkzeug unter `/ui/reflexion` — **für die Pflegekraft, nicht für

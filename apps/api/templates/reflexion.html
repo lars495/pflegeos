@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Reflexion{% endblock %}
+
+{% block content %}
+<h1>60 Sekunden für dich</h1>
+
+<p class="erfolg">
+  Das hier ist nur für dich — nicht für die Akte. Niemand liest es ohne deine Erlaubnis.
+</p>
+
+{% if fehler %}
+<p class="hinweis">{{ fehler }}</p>
+{% endif %}
+
+<form method="post">
+  <div>
+    <label for="author">Dein Kürzel</label>
+    <input type="text" id="author" name="author" required>
+  </div>
+
+  <div>
+    <label for="gut">Was lief heute gut?</label>
+    <textarea id="gut" name="gut" rows="4"></textarea>
+  </div>
+
+  <div>
+    <label for="schwierig">Was war schwierig?</label>
+    <textarea id="schwierig" name="schwierig" rows="4"></textarea>
+  </div>
+
+  <div>
+    <label for="mitnehmen">Was nimmst du mit?</label>
+    <textarea id="mitnehmen" name="mitnehmen" rows="4"></textarea>
+  </div>
+
+  <button type="submit" class="btn">Reflexion speichern</button>
+</form>
+{% endblock %}

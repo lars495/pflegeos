@@ -27,6 +27,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from apps.api.db import get_session
 from apps.api.models.resident import Resident
+from apps.api.models.reflection import Reflection
 
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
@@ -42,7 +43,6 @@ def initialen(name: str) -> str:
     if len(teile) == 1:
         return teile[0][:2].upper()
     return (teile[0][0] + teile[-1][0]).upper()
-
 
 templates.env.filters["initialen"] = initialen
 
@@ -143,3 +143,38 @@ async def ui_wunsch_hinzufuegen(
         await session.commit()
         await session.refresh(person)
     return templates.TemplateResponse(request, "_wuensche.html", {"person": person})
+
+
+@router.get("/ui/reflexion", response_class=HTMLResponse)
+async def ui_reflexion_formular(request: Request):
+    return templates.TemplateResponse(request, "reflexion.html", {})
+
+
+@router.get("/ui/reflexion/meine", response_class=HTMLResponse)
+async def ui_reflexion_meine(
+    request: Request,
+    author: str = Form(""),
+    session: AsyncSession = Depends(get_session),
+):
+    return templates.TemplateResponse(request, "reflexion.html", {"author": author})
+
+
+@router.post("/ui/reflexion")
+async def ui_reflexion_speichern(
+    request: Request,
+    author: str = Form(""),
+    gut: str = Form(""),
+    schwierig: str = Form(""),
+    mitnehmen: str = Form(""),
+    session: AsyncSession = Depends(get_session),
+):
+    if not author.strip():
+        return templates.TemplateResponse(
+            request, "reflexion.html", {"fehler": "Bitte dein Kürzel eintragen."}
+        )
+    session.add(Reflection(
+        author=author.strip(), gut=gut.strip(),
+        schwierig=schwierig.strip(), mitnehmen=mitnehmen.strip(),
+    ))
+    await session.commit()
+    return RedirectResponse(f"/ui/reflexion/meine?author={author.strip()}", status_code=303)
