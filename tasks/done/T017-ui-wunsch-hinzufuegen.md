@@ -2,18 +2,20 @@
 id: T017
 title: Wunsch festhalten (ohne Seitenwechsel)
 roadmap_item: Bewohner-Profil mit Biografie (Lebensgeschichte, Beruf, Werte)
-depends_on: [T016]
+depends_on:
+- T016
 target_files:
-  - apps/api/templates/_wuensche.html
-  - apps/api/web.py
+- apps/api/templates/_wuensche.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/templates/_biografie.html
-  - apps/api/templates/bewohner_detail.html
-  - tests/task_tests/test_t017_ui_wunsch_hinzufuegen.py
+- apps/api/web.py
+- apps/api/templates/_biografie.html
+- apps/api/templates/bewohner_detail.html
+- tests/task_tests/test_t017_ui_wunsch_hinzufuegen.py
 test_command: pytest -q tests/task_tests/test_t017_ui_wunsch_hinzufuegen.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-08-28'
 ---
 
 Wünsche sind ein Kernstück der Personenzentrierung — sie dürfen nie verloren

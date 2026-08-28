@@ -1,0 +1,16 @@
+<div id="wuensche-block">
+  {% if person.wuensche %}
+    <ul class="wunsch-liste">
+      {% for w in person.wuensche %}<li>{{ w }}</li>{% endfor %}
+    </ul>
+  {% else %}
+    <p class="leer">Noch kein Wunsch festgehalten.</p>
+  {% endif %}
+  <form hx-post="/ui/bewohner/{{ person.id }}/wuensche"
+        hx-target="#wuensche-block" hx-swap="outerHTML">
+    <label for="wunsch">Was wünscht sich diese Person?</label>
+    <input type="text" id="wunsch" name="wunsch"
+           placeholder="Zum Beispiel: einmal wieder ans Meer">
+    <button type="submit" class="btn">Wunsch festhalten</button>
+  </form>
+</div>

@@ -125,3 +125,21 @@ async def ui_biografie_speichern(
     return templates.TemplateResponse(
         request, "_biografie.html", {"person": person, "bearbeiten": False}
     )
+
+
+@router.post("/ui/bewohner/{resident_id}/wuensche", response_class=HTMLResponse)
+async def ui_wunsch_hinzufuegen(
+    resident_id: str, request: Request,
+    wunsch: str = Form(""),
+    session: AsyncSession = Depends(get_session),
+):
+    person = await session.get(Resident, resident_id)
+    if person is None:
+        raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
+    if wunsch.strip():
+        # neue Liste zuweisen, nicht .append() — sonst merkt SQLAlchemy
+        # die Änderung am JSON-Feld nicht
+        person.wuensche = [*person.wuensche, wunsch.strip()]
+        await session.commit()
+        await session.refresh(person)
+    return templates.TemplateResponse(request, "_wuensche.html", {"person": person})
