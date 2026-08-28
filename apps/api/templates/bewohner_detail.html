@@ -15,26 +15,14 @@
     {% endif %}
   </div>
 
-  {% if person.biografie %}
-    <div class="biografie">
-      <h2>Wer ich bin</h2>
-      <div>{{ person.biografie }}</div>
-    </div>
-  {% endif %}
+  {# Biografie zuerst — vor allem anderen (PRINCIPLES.md, Säule 1).
+     Als Fragment eingebunden, damit sie ohne Seitenwechsel bearbeitbar ist. #}
+  <h2>Wer ich bin</h2>
+  {% include "_biografie.html" %}
 
-  <div class="wunsch-liste">
-    <h2>Meine Wünsche</h2>
-    {% if person.wuensche %}
-      <ul>
-        {% for wunsch in person.wuensche %}
-          <li>{{ wunsch }}</li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p class="leer">Noch keine Wünsche hinzugefügt.</p>
-    {% endif %}
-  </div>
+  <h2>Meine Wünsche</h2>
+  {% include "_wuensche.html" %}
 
-  <a href="/ui/bewohner" class="btn-secondary">Zurück zur Liste</a>
+  <p><a href="/ui/bewohner" class="btn-secondary">Zurück zur Liste</a></p>
 </div>
 {% endblock %}
