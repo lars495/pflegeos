@@ -2,18 +2,20 @@
 id: T019
 title: Meine Reflexionen ansehen
 roadmap_item: Reflexions-Tool (60-Sek nach Schicht)
-depends_on: [T018]
+depends_on:
+- T018
 target_files:
-  - apps/api/templates/reflexion_meine.html
-  - apps/api/web.py
+- apps/api/templates/reflexion_meine.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/templates/reflexion.html
-  - apps/api/models/reflection.py
-  - tests/task_tests/test_t019_ui_meine_reflexionen.py
+- apps/api/web.py
+- apps/api/templates/reflexion.html
+- apps/api/models/reflection.py
+- tests/task_tests/test_t019_ui_meine_reflexionen.py
 test_command: pytest -q tests/task_tests/test_t019_ui_meine_reflexionen.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-08-28'
 ---
 
 Die eigenen Reflexionen unter `/ui/reflexion/meine?author=KÜRZEL`.

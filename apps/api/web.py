@@ -151,12 +151,20 @@ async def ui_reflexion_formular(request: Request):
 
 
 @router.get("/ui/reflexion/meine", response_class=HTMLResponse)
-async def ui_reflexion_meine(
-    request: Request,
-    author: str = Form(""),
-    session: AsyncSession = Depends(get_session),
+async def ui_meine_reflexionen(
+    request: Request, author: str = "", session: AsyncSession = Depends(get_session)
 ):
-    return templates.TemplateResponse(request, "reflexion.html", {"author": author})
+    eintraege = []
+    if author.strip():
+        result = await session.execute(
+            select(Reflection)
+            .where(Reflection.author == author.strip())
+            .order_by(Reflection.created_at.desc())
+        )
+        eintraege = result.scalars().all()
+    return templates.TemplateResponse(
+        request, "reflexion_meine.html", {"eintraege": eintraege, "author": author}
+    )
 
 
 @router.post("/ui/reflexion")
