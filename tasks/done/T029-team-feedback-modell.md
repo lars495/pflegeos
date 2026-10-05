@@ -1,17 +1,18 @@
 ---
 id: T029
-title: "Modell: anonymes Team-Feedback zur Übergabe"
+title: 'Modell: anonymes Team-Feedback zur Übergabe'
 roadmap_item: Recherche 2026-10-05 — Team-Reflexion zur Übergabe (anonym)
 depends_on: []
 target_files:
-  - apps/api/models/team_feedback.py
+- apps/api/models/team_feedback.py
 context_files:
-  - apps/api/models/beobachtung.py
-  - apps/api/db.py
-  - tests/task_tests/test_t029_team_feedback_modell.py
+- apps/api/models/beobachtung.py
+- apps/api/db.py
+- tests/task_tests/test_t029_team_feedback_modell.py
 test_command: pytest -q tests/task_tests/test_t029_team_feedback_modell.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-10-05'
 ---
 
 Das Team soll anonym sagen können, was in Übergaben fehlt oder stört. **Anonymität
