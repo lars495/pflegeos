@@ -389,6 +389,19 @@ def run_task_test(task: Task) -> tuple[bool, str]:
     return True, "\n".join(log)
 
 
+def run_full_suite() -> tuple[bool, str]:
+    cmd = _wrap_for_container("pytest -q tests/")
+    try:
+        r = subprocess.run(cmd, shell=True, cwd=ROOT, capture_output=True, text=True, timeout=600)
+    except subprocess.TimeoutExpired:
+        return False, "Gesamtsuite: TIMEOUT"
+    out = (r.stdout or "") + "\n" + (r.stderr or "")
+    if r.returncode != 0:
+        fails = "\n".join(l for l in out.splitlines() if l.startswith(("FAILED", "ERROR", "E ")))
+        return False, f"$ {cmd}\n{fails[-6000:]}\n[FAIL] Gesamtsuite rot"
+    return True, ""
+
+
 # ────────────────────────────────────────────────────────────────────
 # Git
 # ────────────────────────────────────────────────────────────────────
@@ -674,6 +687,15 @@ async def main(argv: list[str]) -> int:
             continue
 
         ok, test_log = run_task_test(task)
+        if ok:
+            # Regressionsschutz (L11): Der Task-Test allein reicht nicht. Weil
+            # target_files komplett neu geschrieben werden, kann das Modell
+            # Bestehendes still entfernen oder umbenennen.
+            ok, voll_log = run_full_suite()
+            if not ok:
+                test_log = ("Dein Task-Test ist grün, aber du hast BESTEHENDE "
+                            "Funktionen kaputt gemacht. Behalte alle vorhandenen "
+                            "Routen, Funktionen und Feldnamen exakt bei.\n\n" + voll_log)
         print(f"[agent] Versuch {attempt}: Test {'GRÜN' if ok else 'rot'}")
         if ok:
             success = True
