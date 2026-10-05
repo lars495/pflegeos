@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import datetime as dt
 import random
+from collections import defaultdict
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, Request, HTTPException, Form
@@ -374,6 +375,54 @@ async def ui_notiz_freigeben(
     return await _notizen_fragment(request, session, person)
 
 
+@router.get("/ui/uebergabe", response_class=HTMLResponse)
+async def ui_uebergabe(request: Request, session: AsyncSession = Depends(get_session)):
+    """Übersicht für die Schichtübergabe."""
+    seit = dt.datetime.utcnow() - dt.timedelta(hours=24)
+
+    personen_result = await session.execute(select(Resident).order_by(Resident.name))
+    personen = personen_result.scalars().all()
+
+    beob_result = await session.execute(
+        select(Beobachtung)
+        .where(Beobachtung.created_at >= seit)
+        .order_by(Beobachtung.created_at.desc())
+    )
+    beobachtungen_raw = beob_result.scalars().all()
+    beobachtungen: dict[str, list[Beobachtung]] = defaultdict(list)
+    for b in beobachtungen_raw:
+        beobachtungen[b.resident_id].append(b)
+
+    hinweise_result = await session.execute(
+        select(PersonHinweis).order_by(PersonHinweis.created_at)
+    )
+    hinweise_raw = hinweise_result.scalars().all()
+    hinweise: dict[str, list[PersonHinweis]] = defaultdict(list)
+    for h in hinweise_raw:
+        hinweise[h.resident_id].append(h)
+
+    notizen_q = await session.execute(
+        select(UebergabeNotiz)
+        .where(UebergabeNotiz.status == "freigegeben", UebergabeNotiz.freigegeben_at >= seit)
+        .order_by(UebergabeNotiz.freigegeben_at.desc())
+    )
+    notizen_raw = notizen_q.scalars().all()
+    notizen: dict[str, list[UebergabeNotiz]] = defaultdict(list)
+    for n in notizen_raw:
+        notizen[n.resident_id].append(n)
+
+    return templates.TemplateResponse(
+        request,
+        "uebergabe.html",
+        {
+            "personen": personen,
+            "beobachtungen": dict(beobachtungen),
+            "hinweise": dict(hinweise),
+            "notizen": dict(notizen),
+        },
+    )
+
+
 @router.get("/ui/reflexion", response_class=HTMLResponse)
 async def ui_reflexion_formular(request: Request):
     return templates.TemplateResponse(request, "reflexion.html", {})
@@ -402,53 +451,88 @@ async def ui_reflexion_speichern(
     author: str = Form(""),
     gut: str = Form(""),
     schwierig: str = Form(""),
-    mitnehmen: str = Form(""),
+    gelernt: str = Form(""),
     session: AsyncSession = Depends(get_session),
 ):
-    if not author.strip():
+    if not author.strip() or not gut.strip() or not schwierig.strip():
         return templates.TemplateResponse(
-            request, "reflexion.html", {"fehler": "Bitte dein Kürzel eintragen."}
+            request,
+            "reflexion.html",
+            {
+                "fehler": "Bitte Kürzel und beide Reflexionsfelder ausfüllen.",
+                "gut": gut,
+                "schwierig": schwierig,
+                "gelernt": gelernt,
+            },
         )
-    session.add(Reflection(
-        author=author.strip(), gut=gut.strip(),
-        schwierig=schwierig.strip(), mitnehmen=mitnehmen.strip(),
-    ))
+    eintrag = Reflection(
+        author=author.strip(),
+        gut=gut.strip(),
+        schwierig=schwierig.strip(),
+        gelernt=gelernt.strip(),
+    )
+    session.add(eintrag)
     await session.commit()
-    return RedirectResponse(f"/ui/reflexion/meine?author={author.strip()}", status_code=303)
+    return RedirectResponse("/ui/reflexion/meine?author=" + author.strip(), status_code=303)
 
 
-@router.get("/ui/uebergabe", response_class=HTMLResponse)
-async def ui_uebergabe(request: Request, session: AsyncSession = Depends(get_session)):
-    personen = (await session.execute(select(Resident).order_by(Resident.zimmer, Resident.name))).scalars().all()
-    seit = dt.datetime.utcnow() - dt.timedelta(hours=24)
-    beob = (await session.execute(
-        select(Beobachtung).where(Beobachtung.created_at >= seit)
-        .order_by(Beobachtung.created_at.desc()))).scalars().all()
-    je_person: dict[str, list] = {}
-    for b in beob:
-        je_person.setdefault(b.resident_id, []).append(b)
-    alle_hinweise = (await session.execute(
-        select(PersonHinweis).order_by(PersonHinweis.created_at))).scalars().all()
-    hinweise: dict[str, list] = {}
-    for h in alle_hinweise:
-        hinweise.setdefault(h.resident_id, []).append(h)
-    return templates.TemplateResponse(request, "uebergabe.html",
-        {"personen": personen, "beobachtungen": je_person, "hinweise": hinweise})
+@router.get("/ui/team-feedback", response_class=HTMLResponse)
+async def ui_team_feedback_formular(request: Request):
+    return templates.TemplateResponse(request, "team_feedback.html", {})
 
 
-@router.get("/ui/team", response_class=HTMLResponse)
-async def ui_team(request: Request, session: AsyncSession = Depends(get_session)):
-    alle = (await session.execute(select(TeamFeedback))).scalars().all()
-    sichtbar = list(alle) if len(alle) >= TEAM_MINDESTANZAHL else []
-    random.shuffle(sichtbar)
-    return templates.TemplateResponse(request, "team.html", {
-        "antworten": sichtbar, "anzahl": len(alle), "mindestanzahl": TEAM_MINDESTANZAHL})
+@router.post("/ui/team-feedback")
+async def ui_team_feedback_speichern(
+    request: Request,
+    author: str = Form(""),
+    thema: str = Form(""),
+    beschreibung: str = Form(""),
+    session: AsyncSession = Depends(get_session),
+):
+    if not author.strip() or not thema.strip() or not beschreibung.strip():
+        return templates.TemplateResponse(
+            request,
+            "team_feedback.html",
+            {
+                "fehler": "Bitte Kürzel, Thema und Beschreibung eingeben.",
+                "thema": thema,
+                "beschreibung": beschreibung,
+            },
+        )
+    feedback = TeamFeedback(
+        author=author.strip(),
+        thema=thema.strip(),
+        beschreibung=beschreibung.strip(),
+    )
+    session.add(feedback)
+    await session.commit()
+    return templates.TemplateResponse(
+        request, "team_feedback.html", {"erfolg": "Danke für dein Feedback!"}
+    )
 
 
-@router.post("/ui/team")
-async def ui_team_speichern(gefehlt: str = Form(""), unnoetig: str = Form(""), hilft: str = Form(""),
-                            session: AsyncSession = Depends(get_session)):
-    if gefehlt.strip() or unnoetig.strip() or hilft.strip():
-        session.add(TeamFeedback(gefehlt=gefehlt.strip(), unnoetig=unnoetig.strip(), hilft=hilft.strip()))
-        await session.commit()
-    return RedirectResponse("/ui/team", status_code=303)
+@router.get("/ui/team-feedback/uebersicht", response_class=HTMLResponse)
+async def ui_team_feedback_uebersicht(
+    request: Request, session: AsyncSession = Depends(get_session)
+):
+    result = await session.execute(
+        select(TeamFeedback).order_by(TeamFeedback.created_at.desc())
+    )
+    eintraege = result.scalars().all()
+    return templates.TemplateResponse(
+        request, "team_feedback_uebersicht.html", {"eintraege": eintraege}
+    )
+
+
+@router.get("/ui/wuerfel", response_class=HTMLResponse)
+async def ui_wuerfel(request: Request):
+    """Zufällige Reflexionsfrage für die Teambesprechung."""
+    fragen = [
+        "Was hat dich heute berührt?",
+        "Wann hast du dich heute besonders gehört gefühlt?",
+        "Was würdest du dir für die nächste Schicht wünschen?",
+        "Welcher Bewohner hat dir heute ein Lächeln geschenkt?",
+        "Was hast du heute gut gemacht?",
+    ]
+    frage = random.choice(fragen)
+    return templates.TemplateResponse(request, "wuerfel.html", {"frage": frage})

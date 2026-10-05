@@ -1,19 +1,21 @@
 ---
 id: T033
-title: "Freigegebene Notizen in der Übergabe zeigen"
+title: Freigegebene Notizen in der Übergabe zeigen
 roadmap_item: Recherche 2026-10-05 — Übergabe-Notiz mit Freigabe
-depends_on: [T032]
+depends_on:
+- T032
 target_files:
-  - apps/api/templates/uebergabe.html
-  - apps/api/web.py
+- apps/api/templates/uebergabe.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/templates/uebergabe.html
-  - apps/api/models/uebergabe_notiz.py
-  - tests/task_tests/test_t033_ui_notizen_in_uebergabe.py
+- apps/api/web.py
+- apps/api/templates/uebergabe.html
+- apps/api/models/uebergabe_notiz.py
+- tests/task_tests/test_t033_ui_notizen_in_uebergabe.py
 test_command: pytest -q tests/task_tests/test_t033_ui_notizen_in_uebergabe.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 3
+completed_at: '2026-10-05'
 ---
 
 In der Übergabe erscheinen **ausschließlich freigegebene** Notizen der letzten

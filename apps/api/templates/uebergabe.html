@@ -49,6 +49,11 @@
       {% else %}
         <p class="muted">Nichts Besonderes gemeldet.</p>
       {% endif %}
+
+      <!-- UEBERGABE-NOTIZEN -->
+      {% for n in notizen.get(p.id, []) %}
+        <p><strong>Notiz:</strong> {{ n.text }} <span class="muted">({{ n.author }})</span></p>
+      {% endfor %}
     </div>
   {% endfor %}
 {% endif %}
