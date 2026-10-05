@@ -1,17 +1,18 @@
 ---
 id: T027
-title: "Modell: SBAR-Notiz für den Arztanruf"
+title: 'Modell: SBAR-Notiz für den Arztanruf'
 roadmap_item: Recherche 2026-10-05 — SBAR-Vorlage für den Arztanruf
 depends_on: []
 target_files:
-  - apps/api/models/sbar.py
+- apps/api/models/sbar.py
 context_files:
-  - apps/api/models/beobachtung.py
-  - apps/api/db.py
-  - tests/task_tests/test_t027_sbar_modell.py
+- apps/api/models/beobachtung.py
+- apps/api/db.py
+- tests/task_tests/test_t027_sbar_modell.py
 test_command: pytest -q tests/task_tests/test_t027_sbar_modell.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-10-05'
 ---
 
 SBAR (Situation, Hintergrund, Einschätzung, Empfehlung) ist im Pflegeheim vor
