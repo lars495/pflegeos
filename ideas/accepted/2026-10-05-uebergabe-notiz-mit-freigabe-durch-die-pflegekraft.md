@@ -5,7 +5,7 @@ pz: 2
 emp: 4
 kom: 2
 score: 14
-status: neu
+status: angenommen (Serie T024–T033)
 ---
 
 Pflegekräfte können eine Übergabe- oder Beobachtungsnotiz als Entwurf anlegen (zunächst per Texteingabe, später optional per Diktat). Der Entwurf wird erst nach ausdrücklicher Bestätigung Teil der Doku. Das Audit-Log hält fest, wer wann bestätigt oder geändert hat, ohne Leistungsauswertung. Die Freigabelogik ist so gebaut, dass eine spätere Spracheingabe nur eine zusätzliche Eingabeart wäre.

@@ -5,7 +5,7 @@ pz: 3
 emp: 4
 kom: 2
 score: 17
-status: neu
+status: angenommen (Serie T024–T033)
 ---
 
 Bei einer Zustandsveränderung erzeugt PflegeOS aus den Profildaten und den letzten Stop-and-Watch-Meldungen einen editierbaren SBAR-Entwurf (Situation, Hintergrund, Einschätzung, Empfehlung) als Gesprächsstütze. Die Pflegekraft passt ihn an und kann ihn als Notiz speichern. Die Felder sind pro Haus konfigurierbar, damit das Team das Format mitgestalten kann.

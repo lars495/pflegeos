@@ -5,7 +5,7 @@ pz: 5
 emp: 4
 kom: 2
 score: 23
-status: neu
+status: angenommen (Serie T024–T033)
 ---
 
 Bewohner:innen können im Profil festhalten, was bei Übergaben über sie gesagt werden soll oder nicht (z. B. 'Bitte nicht vor Besuch besprechen', 'Das ist mir wichtig'). Diese Hinweise erscheinen im Kopf der Übergabeansicht. Eine einfache Variante dokumentiert die Wünsche in einem Freitextfeld, das Pflegekräfte im Gespräch ausfüllen.

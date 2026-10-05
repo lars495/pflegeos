@@ -5,7 +5,7 @@ pz: 2
 emp: 5
 kom: 1
 score: 19
-status: neu
+status: angenommen (Serie T024–T033)
 ---
 
 Das bestehende Reflexions-Tool bekommt eine kurze Vorlage für das Team: 'Was hat in der Übergabe gefehlt?', 'Was war unnötig?', 'Welches Format hilft uns?'. Die Antworten werden gesammelt und nur dem Team als Zusammenfassung gezeigt. Daraus entstehen kleine Anpassungen im Sinne von PDSA-Zyklen, etwa Felder in der Übergabeansicht.
