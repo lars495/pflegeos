@@ -451,29 +451,19 @@ async def ui_reflexion_speichern(
     author: str = Form(""),
     gut: str = Form(""),
     schwierig: str = Form(""),
-    gelernt: str = Form(""),
+    mitnehmen: str = Form(""),
     session: AsyncSession = Depends(get_session),
 ):
-    if not author.strip() or not gut.strip() or not schwierig.strip():
+    if not author.strip():
         return templates.TemplateResponse(
-            request,
-            "reflexion.html",
-            {
-                "fehler": "Bitte Kürzel und beide Reflexionsfelder ausfüllen.",
-                "gut": gut,
-                "schwierig": schwierig,
-                "gelernt": gelernt,
-            },
+            request, "reflexion.html", {"fehler": "Bitte dein Kürzel eintragen."}
         )
-    eintrag = Reflection(
-        author=author.strip(),
-        gut=gut.strip(),
-        schwierig=schwierig.strip(),
-        gelernt=gelernt.strip(),
-    )
-    session.add(eintrag)
+    session.add(Reflection(
+        author=author.strip(), gut=gut.strip(),
+        schwierig=schwierig.strip(), mitnehmen=mitnehmen.strip(),
+    ))
     await session.commit()
-    return RedirectResponse("/ui/reflexion/meine?author=" + author.strip(), status_code=303)
+    return RedirectResponse(f"/ui/reflexion/meine?author={author.strip()}", status_code=303)
 
 
 @router.get("/ui/team-feedback", response_class=HTMLResponse)
