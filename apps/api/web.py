@@ -30,6 +30,7 @@ from apps.api.db import get_session
 from apps.api.models.resident import Resident
 from apps.api.models.reflection import Reflection
 from apps.api.models.beobachtung import Beobachtung
+from apps.api.models.hinweis import PersonHinweis
 from apps.api.audit import log_action
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -143,8 +144,13 @@ async def ui_bewohner_detail(
         select(Beobachtung).where(Beobachtung.resident_id == resident_id)
         .order_by(Beobachtung.created_at.desc()).limit(5))
     beobachtungen = result.scalars().all()
+    hinweise_result = await session.execute(
+        select(PersonHinweis).where(PersonHinweis.resident_id == resident_id)
+        .order_by(PersonHinweis.created_at))
+    hinweise = hinweise_result.scalars().all()
     return templates.TemplateResponse(request, "bewohner_detail.html",
-                                      {"person": person, "beobachtungen": beobachtungen})
+                                      {"person": person, "beobachtungen": beobachtungen,
+                                       "hinweise": hinweise})
 
 
 @router.get("/ui/bewohner/{resident_id}/biografie", response_class=HTMLResponse)
@@ -192,6 +198,26 @@ async def ui_wunsch_hinzufuegen(
         await session.commit()
         await session.refresh(person)
     return templates.TemplateResponse(request, "_wuensche.html", {"person": person})
+
+
+@router.post("/ui/bewohner/{resident_id}/hinweise", response_class=HTMLResponse)
+async def ui_hinweis_hinzufuegen(
+    resident_id: str, request: Request,
+    text: str = Form(""),
+    session: AsyncSession = Depends(get_session),
+):
+    person = await session.get(Resident, resident_id)
+    if person is None:
+        raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
+    if text.strip():
+        hinweis = PersonHinweis(resident_id=resident_id, text=text.strip())
+        session.add(hinweis)
+        await session.commit()
+    hinweise = (await session.execute(
+        select(PersonHinweis).where(PersonHinweis.resident_id == resident_id)
+        .order_by(PersonHinweis.created_at))).scalars().all()
+    return templates.TemplateResponse(request, "_hinweise.html",
+                                      {"person": person, "hinweise": hinweise})
 
 
 @router.get("/ui/reflexion", response_class=HTMLResponse)

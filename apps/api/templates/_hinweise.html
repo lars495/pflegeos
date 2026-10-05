@@ -1,0 +1,16 @@
+<div id="hinweise-block">
+  {% if hinweise %}
+    <ul class="wunsch-liste">
+      {% for h in hinweise %}<li>{{ h.text }}</li>{% endfor %}
+    </ul>
+  {% else %}
+    <p class="leer">Noch nichts festgehalten.</p>
+  {% endif %}
+  <form hx-post="/ui/bewohner/{{ person.id }}/hinweise"
+        hx-target="#hinweise-block" hx-swap="outerHTML">
+    <label for="hinweis-text">Was sollen alle bei der Übergabe über dich wissen — oder was nicht?</label>
+    <input type="text" id="hinweis-text" name="text"
+           placeholder="Zum Beispiel: Bitte nicht vor Besuch besprechen">
+    <button type="submit" class="btn">Festhalten</button>
+  </form>
+</div>

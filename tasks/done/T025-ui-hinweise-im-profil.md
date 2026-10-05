@@ -1,21 +1,24 @@
 ---
 id: T025
-title: "Hinweise der Person im Profil festhalten"
+title: Hinweise der Person im Profil festhalten
 roadmap_item: Recherche 2026-10-05 — Bewohnerblick auf die Übergabe
-depends_on: [T024, T023]
+depends_on:
+- T024
+- T023
 target_files:
-  - apps/api/templates/_hinweise.html
-  - apps/api/templates/bewohner_detail.html
-  - apps/api/web.py
+- apps/api/templates/_hinweise.html
+- apps/api/templates/bewohner_detail.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/templates/bewohner_detail.html
-  - apps/api/templates/_wuensche.html
-  - apps/api/models/hinweis.py
-  - tests/task_tests/test_t025_ui_hinweise_im_profil.py
+- apps/api/web.py
+- apps/api/templates/bewohner_detail.html
+- apps/api/templates/_wuensche.html
+- apps/api/models/hinweis.py
+- tests/task_tests/test_t025_ui_hinweise_im_profil.py
 test_command: pytest -q tests/task_tests/test_t025_ui_hinweise_im_profil.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-10-05'
 ---
 
 Auf der Profilseite ein neuer Abschnitt **„Das ist mir bei Übergaben wichtig"**,
