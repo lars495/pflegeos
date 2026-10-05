@@ -5,7 +5,7 @@ pz: 4
 emp: 4
 kom: 2
 score: 20
-status: neu
+status: angenommen (Task-Serie T020–T023)
 ---
 
 Jede Berufsgruppe (Pflegeassistenz, Hauswirtschaft, Therapie) kann mit wenigen Klicks eine Veränderung zu einem Bewohner melden, etwa 'wirkt anders als sonst', isst/trinkt weniger oder braucht mehr Hilfe. Die Meldung erscheint als kurzer Eintrag im Profil und in der Übergabeansicht der nächsten Schicht. Die Auswahlfelder und der Standort im Ablauf werden gemeinsam mit den Pflegehilfskräften festgelegt. Umsetzbar als einfaches servergerendertes Formular mit Audit-Log-Eintrag.
