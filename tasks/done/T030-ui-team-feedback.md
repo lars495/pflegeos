@@ -1,21 +1,24 @@
 ---
 id: T030
-title: "Anonymes Team-Feedback zur Übergabe"
+title: Anonymes Team-Feedback zur Übergabe
 roadmap_item: Recherche 2026-10-05 — Team-Reflexion zur Übergabe (anonym)
-depends_on: [T029, T028]
+depends_on:
+- T029
+- T028
 target_files:
-  - apps/api/templates/team.html
-  - apps/api/templates/base.html
-  - apps/api/web.py
+- apps/api/templates/team.html
+- apps/api/templates/base.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/templates/base.html
-  - apps/api/templates/reflexion.html
-  - apps/api/models/team_feedback.py
-  - tests/task_tests/test_t030_ui_team_feedback.py
+- apps/api/web.py
+- apps/api/templates/base.html
+- apps/api/templates/reflexion.html
+- apps/api/models/team_feedback.py
+- tests/task_tests/test_t030_ui_team_feedback.py
 test_command: pytest -q tests/task_tests/test_t030_ui_team_feedback.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 2
+completed_at: '2026-10-05'
 ---
 
 Eine Seite `/ui/team`, auf der das Team anonym zur Übergabe Rückmeldung gibt —

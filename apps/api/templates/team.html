@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Team-Feedback{% endblock %}
+
+{% block content %}
+<h1>Unsere Übergabe — was können wir besser machen?</h1>
+
+<p class="erfolg">Anonym: Hier wird kein Name und kein Kürzel gespeichert.</p>
+
+<form method="post">
+  <div>
+    <label for="gefehlt">Was hat in der Übergabe gefehlt?</label>
+    <textarea id="gefehlt" name="gefehlt" rows="4"></textarea>
+  </div>
+  <div>
+    <label for="unnoetig">Was war unnötig?</label>
+    <textarea id="unnoetig" name="unnoetig" rows="4"></textarea>
+  </div>
+  <div>
+    <label for="hilft">Was würde uns helfen?</label>
+    <textarea id="hilft" name="hilft" rows="4"></textarea>
+  </div>
+  <button type="submit" class="btn">Anonym abgeben</button>
+</form>
+
+<h2>Was das Team sagt</h2>
+{% if antworten|length == 0 %}
+<p class="muted">Sichtbar ab {{ mindestanzahl }} Antworten (bisher {{ anzahl }}), damit niemand zuordenbar ist.</p>
+{% else %}
+{% for a in antworten %}
+<div class="card">
+  {% if a.gefehlt %}<p><strong>Was hat gefehlt?</strong> {{ a.gefehlt }}</p>{% endif %}
+  {% if a.unnoetig %}<p><strong>Was war unnötig?</strong> {{ a.unnoetig }}</p>{% endif %}
+  {% if a.hilft %}<p><strong>Was würde helfen?</strong> {{ a.hilft }}</p>{% endif %}
+</div>
+{% endfor %}
+{% endif %}
+{% endblock %}

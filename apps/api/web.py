@@ -18,6 +18,7 @@ Alle Routen hängen unter /ui — die JSON-API unter /v1 bleibt unberührt.
 from __future__ import annotations
 
 import datetime as dt
+import random
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, Request, HTTPException, Form
@@ -32,6 +33,7 @@ from apps.api.models.reflection import Reflection
 from apps.api.models.beobachtung import Beobachtung
 from apps.api.models.hinweis import PersonHinweis
 from apps.api.models.sbar import SbarNotiz
+from apps.api.models.team_feedback import TeamFeedback
 from apps.api.audit import log_action
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -48,6 +50,8 @@ BEOBACHTUNG_KATEGORIEN = [
     "hat Schmerzen geäußert",
     "freut sich über etwas Besonderes",
 ]
+
+TEAM_MINDESTANZAHL = 3
 
 
 def initialen(name: str) -> str:
@@ -369,3 +373,21 @@ async def ui_uebergabe(request: Request, session: AsyncSession = Depends(get_ses
         hinweise.setdefault(h.resident_id, []).append(h)
     return templates.TemplateResponse(request, "uebergabe.html",
         {"personen": personen, "beobachtungen": je_person, "hinweise": hinweise})
+
+
+@router.get("/ui/team", response_class=HTMLResponse)
+async def ui_team(request: Request, session: AsyncSession = Depends(get_session)):
+    alle = (await session.execute(select(TeamFeedback))).scalars().all()
+    sichtbar = list(alle) if len(alle) >= TEAM_MINDESTANZAHL else []
+    random.shuffle(sichtbar)
+    return templates.TemplateResponse(request, "team.html", {
+        "antworten": sichtbar, "anzahl": len(alle), "mindestanzahl": TEAM_MINDESTANZAHL})
+
+
+@router.post("/ui/team")
+async def ui_team_speichern(gefehlt: str = Form(""), unnoetig: str = Form(""), hilft: str = Form(""),
+                            session: AsyncSession = Depends(get_session)):
+    if gefehlt.strip() or unnoetig.strip() or hilft.strip():
+        session.add(TeamFeedback(gefehlt=gefehlt.strip(), unnoetig=unnoetig.strip(), hilft=hilft.strip()))
+        await session.commit()
+    return RedirectResponse("/ui/team", status_code=303)
