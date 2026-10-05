@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}PflegeOS — Beobachtung melden{% endblock %}
+
+{% block content %}
+<h1>Mir ist etwas aufgefallen</h1>
+<p class="lead">{{ person.name }}</p>
+
+{% if fehler %}
+  <p class="hinweis">{{ fehler }}</p>
+{% endif %}
+
+<form method="post">
+  <label for="author">Dein Kürzel</label>
+  <input type="text" id="author" name="author" required class="form-control">
+
+  <fieldset>
+    <legend>Was hast du beobachtet?</legend>
+    {% for k in kategorien %}
+      <div>
+        <input type="radio" id="kategorie-{{ loop.index }}" name="kategorie" value="{{ k }}" required>
+        <label for="kategorie-{{ loop.index }}">{{ k }}</label>
+      </div>
+    {% endfor %}
+  </fieldset>
+
+  <label for="notiz">Möchtest du etwas ergänzen? (freiwillig)</label>
+  <textarea id="notiz" name="notiz" class="form-control"></textarea>
+
+  <button type="submit" class="btn">Beobachtung weitergeben</button>
+  <a href="/ui/bewohner/{{ person.id }}" class="btn btn-secondary">Zurück</a>
+</form>
+{% endblock %}

@@ -28,11 +28,23 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from apps.api.db import get_session
 from apps.api.models.resident import Resident
 from apps.api.models.reflection import Reflection
+from apps.api.models.beobachtung import Beobachtung
+from apps.api.audit import log_action
 
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 router = APIRouter()
+
+BEOBACHTUNG_KATEGORIEN = [
+    "wirkt anders als sonst",
+    "isst oder trinkt weniger",
+    "braucht mehr Hilfe als sonst",
+    "ist unruhiger oder ängstlicher",
+    "schläft mehr oder ist schläfrig",
+    "hat Schmerzen geäußert",
+    "freut sich über etwas Besonderes",
+]
 
 
 def initialen(name: str) -> str:
@@ -86,6 +98,37 @@ async def ui_bewohner_neu_speichern(
     session.add(person)
     await session.commit()
     return RedirectResponse(f"/ui/bewohner/{person.id}", status_code=303)
+
+
+@router.get("/ui/bewohner/{resident_id}/beobachtung", response_class=HTMLResponse)
+async def ui_beobachtung_formular(resident_id: str, request: Request,
+                                  session: AsyncSession = Depends(get_session)):
+    person = await session.get(Resident, resident_id)
+    if person is None:
+        raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
+    return templates.TemplateResponse(request, "beobachtung_neu.html",
+        {"person": person, "kategorien": BEOBACHTUNG_KATEGORIEN})
+
+
+@router.post("/ui/bewohner/{resident_id}/beobachtung")
+async def ui_beobachtung_speichern(resident_id: str, request: Request,
+        author: str = Form(""), kategorie: str = Form(""), notiz: str = Form(""),
+        session: AsyncSession = Depends(get_session)):
+    person = await session.get(Resident, resident_id)
+    if person is None:
+        raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
+    if not author.strip() or kategorie not in BEOBACHTUNG_KATEGORIEN:
+        return templates.TemplateResponse(request, "beobachtung_neu.html",
+            {"person": person, "kategorien": BEOBACHTUNG_KATEGORIEN,
+             "fehler": "Bitte Kürzel und eine Beobachtung auswählen."})
+    b = Beobachtung(resident_id=resident_id, author=author.strip(),
+                    kategorie=kategorie, notiz=notiz.strip())
+    session.add(b)
+    await session.flush()
+    await log_action(session, actor=author.strip(), action="beobachtung.created",
+                     resource_type="resident", resource_id=resident_id)
+    await session.commit()
+    return RedirectResponse(f"/ui/bewohner/{resident_id}", status_code=303)
 
 
 @router.get("/ui/bewohner/{resident_id}", response_class=HTMLResponse)

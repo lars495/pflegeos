@@ -2,19 +2,21 @@
 id: T021
 title: Beobachtung melden (Formular)
 roadmap_item: Recherche 2026-10-05 — Stop-and-Watch-Karte im Bewohnerprofil
-depends_on: [T020]
+depends_on:
+- T020
 target_files:
-  - apps/api/templates/beobachtung_neu.html
-  - apps/api/web.py
+- apps/api/templates/beobachtung_neu.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/templates/bewohner_neu.html
-  - apps/api/models/beobachtung.py
-  - apps/api/audit.py
-  - tests/task_tests/test_t021_ui_beobachtung_melden.py
+- apps/api/web.py
+- apps/api/templates/bewohner_neu.html
+- apps/api/models/beobachtung.py
+- apps/api/audit.py
+- tests/task_tests/test_t021_ui_beobachtung_melden.py
 test_command: pytest -q tests/task_tests/test_t021_ui_beobachtung_melden.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-10-05'
 ---
 
 Ein kurzes Formular, mit dem jede Person im Team eine Veränderung melden kann —
