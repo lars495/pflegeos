@@ -170,6 +170,30 @@ nicht, obwohl die Dateien da waren — Python lädt Module beim Start. Der
 nächtliche Ablauf startet den Dienst nach dem Bauen neu; bei manuellen Läufen
 fehlt dieser Schritt und man testet gegen den Stand von vorgestern.
 
+## L10 · Ein Wächter, der nur nach Neuem sucht, merkt nicht, wenn das Alte verschwindet (Sept./Okt.)
+
+**Was passiert ist:** Der Anbieter hat das Build-Modell (Hermes 4 70B) eingestellt,
+ebenso die Fallback- und Rechtsprüfungs-Modelle. Der wöchentliche Modell-Check
+meldete trotzdem jeden Montag „no update needed" — er suchte nur nach *neueren*
+Versionen, nicht danach, ob die *aktive* noch existiert. Aufgefallen ist es nur,
+weil der Backlog zufällig leer war; der nächste Bauversuch wäre gescheitert.
+
+Dazu ein Missverständnis aus der Anfangszeit: „Hermes" war als *Hermes Agent*
+gemeint, nicht als Modell. Ein Modellname war so zum Markenzeichen des
+Experiments geworden.
+
+**Erkenntnis:** Externe Abhängigkeiten altern still. Der Check prüft jetzt, ob
+jedes eingesetzte Modell noch existiert, und weicht auf eine Fallback-Kette
+aus. Modelle sind jetzt Rollen (Bauen, Eskalation, Recherche, Recht), nicht
+Namen im Code. Gebaut wird mit DeepSeek V4 Pro (offene Gewichte); die erste
+Serie damit — T020 bis T023 — war viermal im ersten Versuch grün.
+
+Gleichzeitig neu: ein monatlicher Recherche-Lauf, der international nach guter
+Pflegesoftware sucht. Seine Ideen gehen bewusst nicht direkt in den Backlog,
+sondern über eine öffentliche Zwischenstufe (`ideas/`). Die erste Recherche
+(Übergaben) war bemerkenswert quellenkritisch — sie markierte Herstellerstudien
+und fehlende Evidenz für Pflegeheime ausdrücklich.
+
 ---
 
 ## Was ein echtes Produkt anders bräuchte
