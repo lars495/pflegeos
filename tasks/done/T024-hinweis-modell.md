@@ -1,17 +1,18 @@
 ---
 id: T024
-title: "Modell: Hinweise der Person zur Übergabe"
+title: 'Modell: Hinweise der Person zur Übergabe'
 roadmap_item: Recherche 2026-10-05 — Bewohnerblick auf die Übergabe
 depends_on: []
 target_files:
-  - apps/api/models/hinweis.py
+- apps/api/models/hinweis.py
 context_files:
-  - apps/api/models/beobachtung.py
-  - apps/api/db.py
-  - tests/task_tests/test_t024_hinweis_modell.py
+- apps/api/models/beobachtung.py
+- apps/api/db.py
+- tests/task_tests/test_t024_hinweis_modell.py
 test_command: pytest -q tests/task_tests/test_t024_hinweis_modell.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-10-05'
 ---
 
 Bewohner:innen sollen festhalten können, was ihnen bei Übergaben wichtig ist —
