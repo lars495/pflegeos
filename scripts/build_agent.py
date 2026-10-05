@@ -12,7 +12,7 @@ Arbeitsweise (Task-System, siehe tasks/README.md):
   3. LLM antwortet im FILE-Block-Format (kein JSON-escaping von Code!)
   4. Schreiben nur in target_files erlaubt
   5. Task-Test läuft im API-Container; rot → Fehlerlog zurück ans Modell,
-     bis zu 3 Versuche; letzter Versuch eskaliert auf Hermes 4 405B
+     bis zu 3 Versuche; letzter Versuch eskaliert auf das Eskalationsmodell
   6. Grün → Task nach done/, Commit, Push. Rot nach allen Versuchen →
      attempts_used hochzählen, ggf. nach blocked/ verschieben
   7. tasks/open/ leer → Report "Backlog leer"
@@ -74,7 +74,7 @@ TASKS_DONE = ROOT / "tasks" / "done"
 TASKS_BLOCKED = ROOT / "tasks" / "blocked"
 
 MAX_ATTEMPTS_PER_RUN = 3
-ESCALATION_MODEL = "nousresearch/hermes-4-405b"  # letzter Versuch, wenn Budget reicht
+ESCALATION_MODEL = ModelChoice.BUILD_ESCALATION  # letzter Versuch: stärkeres offenes Modell
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -481,7 +481,7 @@ def write_daily_report(
 
 **Status:** {icon} {"erledigt" if success else "nicht geschafft"} · \
 **Roadmap:** {task.roadmap_item or "—"} · **Versuche heute:** {attempts}\
-{" · **Eskalation auf 405B**" if escalated else ""}
+{" · **Eskalation auf stärkeres Modell**" if escalated else ""}
 
 ### Plan
 {plan or "—"}
@@ -534,7 +534,7 @@ Tag {day_n} des PflegeOS-Experiments 🤖
 
 Kosten heute: {cost_usd:.2f} $ von 1,10 $ Tagesbudget.
 
-Das Experiment: Eine KI (Hermes 4, offene Gewichte) baut täglich an einer
+Das Experiment: Eine KI (Modelle mit offenen Gewichten) baut täglich an einer
 personenzentrierten Pflegesoftware — maximal 1 € pro Tag, alles Open Source,
 jeder Fehlschlag öffentlich. Was dabei über KI-Entwicklung zu lernen ist,
 sammeln wir im Learnings-Log.
@@ -609,7 +609,7 @@ async def main(argv: list[str]) -> int:
                 escalated = True
         except BudgetExceeded:
             if model == ESCALATION_MODEL:
-                print("[agent] Budget reicht nicht für 405B — letzter Versuch mit 70B")
+                print("[agent] Budget reicht nicht für Eskalation — letzter Versuch mit Hauptmodell")
                 try:
                     raw = await call_llm(client, guard, messages, model=ModelChoice.BUILD_PRIMARY)
                 except BudgetExceeded as e:

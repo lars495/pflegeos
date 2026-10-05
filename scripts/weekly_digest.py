@@ -4,7 +4,7 @@ Läuft freitags 07:00 Berlin (Cron), nach dem nächtlichen Agenten-Lauf.
 Sammelt die Daily Reports der letzten 7 Tage und verdichtet sie zu einem
 LinkedIn-Entwurf, den der Betreiber kopiert, glättet und postet.
 
-Der Entwurf wird von Hermes geschrieben — die KI fasst ihre eigene Woche
+Der Entwurf wird vom Build-Modell geschrieben — die KI fasst ihre eigene Woche
 zusammen. Fällt der LLM-Call aus (kein Key, Budget, Fehler), entsteht
 ein nüchterner Template-Digest. Beides landet in reports/weekly/.
 
@@ -118,7 +118,7 @@ def template_draft(days: list[dict], stats: dict, end: dt.date) -> str:
 LLM_SYSTEM = """Du schreibst den wöchentlichen LinkedIn-Post für das PflegeOS-Experiment —
 aus der Ich-Perspektive des menschlichen Betreibers (Pflegewissenschaftler), NICHT der KI.
 
-Das Experiment: Eine KI (Hermes 4, offene Gewichte) baut täglich an einer
+Das Experiment: Eine KI (Modelle mit offenen Gewichten) baut täglich an einer
 personenzentrierten Pflegesoftware. Max. 1 €/Tag, alles Open Source, jeder
 Fehlschlag öffentlich. Kernbotschaft des Projekts: 'So würde man ein echtes
 Produkt NICHT bauen — aber man lernt enorm viel dabei.'
@@ -221,7 +221,7 @@ async def main() -> int:
         draft = template_draft(days, stats, end)
         source = "Template"
     else:
-        source = "Hermes"
+        source = "KI"
 
     year, week, _ = end.isocalendar()
     week_id = f"{year}-W{week:02d}"

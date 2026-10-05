@@ -60,7 +60,7 @@ Regeln für gute Tasks (beim monatlichen Zerlegen beachten):
 1. Wählt niedrigste offene Task-ID, deren `depends_on` alle in `tasks/done/` liegen
 2. Prompt = Task-Beschreibung + vollständiger Inhalt der `context_files`
 3. Schreiben nur in `target_files` erlaubt
-4. Bis zu 3 Versuche; ab Versuch 3 Eskalation auf Hermes 4 405B (falls Budget reicht)
+4. Bis zu 3 Versuche; ab Versuch 3 Eskalation auf das Eskalationsmodell (model_config.json) (falls Budget reicht)
 5. Test grün → Task nach `done/`, Commit `feat(T001): …`
 6. Alle Versuche rot → `attempts_used` hochzählen; bei `max_attempts` → `blocked/`
 7. `tasks/open/` leer → Daily Report meldet „Backlog leer — Nachschub nötig"

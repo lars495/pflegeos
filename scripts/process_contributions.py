@@ -6,11 +6,12 @@ Zwei Quellen:
 
 Ablauf für GitHub Issues:
   - Holt offene Issues mit [Community] im Titel, die noch nicht 'hermes:reviewed' haben
-  - Lässt Hermes klassifizieren (idea/bug/legal → accept/decline/discuss)
-  - Postet Hermes-Antwort als Kommentar auf dem Issue
+  - Lässt die KI klassifizieren (idea/bug/legal → accept/decline/discuss)
+  - Postet KI-Antwort als Kommentar auf dem Issue
   - Setzt Labels: hermes:reviewed + hermes:accepted / hermes:declined / hermes:needs-discussion
 
-Lars ist NICHT in the loop. Hermes antwortet direkt.
+Lars ist NICHT in the loop. Die KI antwortet direkt.
+(Labels heißen aus historischen Gründen weiter hermes:* — bestehende Issues hängen daran.)
 """
 
 from __future__ import annotations
@@ -44,10 +45,10 @@ GITHUB_LABELS = {
     "type:idea":                {"color": "d4c5f9", "description": "Idee / Feature-Wunsch"},
     "type:legal":               {"color": "e4e669", "description": "Gesetz oder Verordnung"},
     "type:bug":                 {"color": "d73a4a", "description": "Bug / Problem"},
-    "hermes:reviewed":          {"color": "0e8a16", "description": "Von Hermes geprüft"},
-    "hermes:accepted":          {"color": "0e8a16", "description": "Von Hermes angenommen → in Arbeit"},
-    "hermes:needs-discussion":  {"color": "fbca04", "description": "Hermes empfiehlt Team-Diskussion"},
-    "hermes:declined":          {"color": "b60205", "description": "Von Hermes abgelehnt (mit Begründung)"},
+    "hermes:reviewed":          {"color": "0e8a16", "description": "Von der KI geprüft"},
+    "hermes:accepted":          {"color": "0e8a16", "description": "Von der KI angenommen → in Arbeit"},
+    "hermes:needs-discussion":  {"color": "fbca04", "description": "KI empfiehlt Team-Diskussion"},
+    "hermes:declined":          {"color": "b60205", "description": "Von der KI abgelehnt (mit Begründung)"},
 }
 
 
@@ -60,7 +61,7 @@ def _gh_headers(token: str) -> dict:
         "Authorization":          f"Bearer {token}",
         "Accept":                 "application/vnd.github+json",
         "X-GitHub-Api-Version":   "2022-11-28",
-        "User-Agent":             "PflegeOS-Hermes/1.0",
+        "User-Agent":             "PflegeOS-Agent/1.0",
     }
 
 
@@ -85,7 +86,7 @@ async def _ensure_labels(client: httpx.AsyncClient, token: str) -> None:
 
 
 async def _fetch_pending_issues(client: httpx.AsyncClient, token: str) -> list[dict]:
-    """Holt offene [Community]-Issues, die Hermes noch nicht beantwortet hat."""
+    """Holt offene [Community]-Issues, die die KI noch nicht beantwortet hat."""
     r = await client.get(
         f"{GITHUB_API}/repos/{GITHUB_REPO}/issues",
         headers=_gh_headers(token),
@@ -128,11 +129,11 @@ async def _add_labels(client: httpx.AsyncClient, token: str, issue_number: int, 
 
 
 # ────────────────────────────────────────────────────────────────────────────
-# Hermes-Klassifikation
+# KI-Klassifikation
 # ────────────────────────────────────────────────────────────────────────────
 
 def _classify_prompt(title: str, body: str, issue_type: str = "") -> str:
-    return f"""Du bist Hermes, der KI-Assistent des PflegeOS-Projekts.
+    return f"""Du bist der KI-Assistent des PflegeOS-Projekts.
 
 Eine Pflegekraft oder pflegeinteressierte Person hat über pflegeos.vercel.app folgendes eingereicht.
 Die Person kennt sich mit Software aus, aber nicht mit Programmierung. Nimm ihr Feedback ernst.
@@ -184,7 +185,7 @@ async def _classify_with_hermes(
             "next_action": "needs-discussion",
             "response_de": (
                 "Vielen Dank für deinen Beitrag! Das tägliche Budget ist heute erschöpft — "
-                "dein Beitrag wird morgen von Hermes geprüft."
+                "dein Beitrag wird morgen von der KI geprüft."
             ),
         }
 
@@ -276,13 +277,13 @@ async def _process_github_issues(token: str, llm: OpenRouterClient, guard: Budge
                 "declined":         "❌",
             }.get(action, "🔍")
 
-            comment = f"**Hermes hat deinen Beitrag geprüft** {action_icon}\n\n"
+            comment = f"**Die KI hat deinen Beitrag geprüft** {action_icon}\n\n"
             comment += verdict.get("response_de", "Danke für deinen Beitrag!")
 
             if action == "accepted" and verdict.get("roadmap_note"):
                 comment += f"\n\n**Roadmap-Notiz:** {verdict['roadmap_note']}"
 
-            comment += "\n\n---\n*Diese Antwort wurde automatisch von Hermes generiert.*"
+            comment += "\n\n---\n*Diese Antwort wurde automatisch von der KI generiert.*"
 
             ok = await _post_comment(gh, token, number, comment)
             if ok:

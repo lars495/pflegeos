@@ -1,6 +1,6 @@
 // Vercel Serverless Function — erstellt GitHub Issue aus Formular-Einreichung.
 // Läuft auf Vercel (kein Hetzner nötig, kein Mixed-Content-Problem).
-// Hermes liest die Issues täglich via process_contributions.py und antwortet direkt.
+// Die KI liest die Issues täglich via process_contributions.py und antwortet direkt.
 
 const REPO = 'lars495/pflegeos';
 const GITHUB_API = 'https://api.github.com';
@@ -74,7 +74,7 @@ module.exports = async (req, res) => {
     '---',
     '',
     '*Eingereicht über [pflegeos.vercel.app](https://pflegeos.vercel.app)*',
-    '*Hermes liest und beantwortet Community-Issues täglich.*',
+    '*Die KI liest und beantwortet Community-Issues täglich.*',
   ].join('\n');
 
   // ── GitHub Issue erstellen ───────────────────────────────────────────────
@@ -128,7 +128,7 @@ module.exports = async (req, res) => {
   return res.status(202).json({
     id:          `#${issue.number}`,
     received_at: new Date().toISOString(),
-    message:     `Danke für deinen Beitrag! Hermes liest ihn täglich und antwortet direkt auf GitHub Issue #${issue.number}. Du kannst den Status hier verfolgen:`,
+    message:     `Danke für deinen Beitrag! Die KI liest ihn täglich und antwortet direkt auf GitHub Issue #${issue.number}. Du kannst den Status hier verfolgen:`,
     issue_url:   issue.html_url,
   });
 };

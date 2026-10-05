@@ -64,12 +64,16 @@ class BudgetGuard:
     # ── Lookups ────────────────────────────────────────────────
     def _key(self, pot: str, date: dt.date | None = None) -> str:
         date = date or dt.date.today()
-        if pot == "legal":
+        if pot in ("legal", "research"):
             return f"budget:legal:{date.strftime('%Y-%m')}"
         return f"budget:{pot}:{date.isoformat()}"
 
     def _limit_for(self, pot: str) -> float:
-        return self.legal_limit if pot == "legal" else self.daily_limit
+        if pot == "legal":
+            return self.legal_limit
+        if pot == "research":
+            return float(os.environ.get("RESEARCH_MONTHLY_BUDGET_USD", "2.00"))
+        return self.daily_limit
 
     def state(self, pot: str = DEFAULT_POT) -> BudgetState:
         key = self._key(pot)
@@ -96,7 +100,7 @@ class BudgetGuard:
         """Schreibt tatsächlichen Verbrauch. Idempotent nicht möglich –
         Caller darf nur einmal pro Call committen."""
         key = self._key(pot)
-        ttl_days = 35 if pot == "legal" else 7
+        ttl_days = 35 if pot in ("legal", "research") else 7
         self.redis.incrbyfloat(key, actual_usd)
         self.redis.expire(key, ttl_days * 86400)
         return self.state(pot)

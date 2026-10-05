@@ -1,4 +1,4 @@
-// Formular-Einreichung → Vercel Serverless Function → GitHub Issue → Hermes antwortet.
+// Formular-Einreichung → Vercel Serverless Function → GitHub Issue → die KI antwortet.
 
 (function () {
   var form   = document.getElementById('contribute-form');
@@ -42,7 +42,7 @@
 
       if (r.status === 202 || r.ok) {
         // Pflegende sehen keine GitHub-Sprache — nur eine warme Bestätigung
-        var msg = '✓ Danke! Hermes hat deinen Beitrag erhalten und antwortet in den nächsten 24 Stunden.';
+        var msg = '✓ Danke! Die KI hat deinen Beitrag erhalten und antwortet in den nächsten 24 Stunden.';
         if (data.issue_url) {
           msg += ' <a href="' + data.issue_url + '" target="_blank" rel="noopener" style="font-size:.9em">'
                + 'Beitrag &amp; Antwort ansehen →</a>';

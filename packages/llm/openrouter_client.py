@@ -30,28 +30,39 @@ MODEL_CONFIG_FILE = Path(__file__).parent / "model_config.json"
 
 
 class ModelChoice(str, Enum):
-    # Hermes 4 70B ist das aktuellste Hermes-Modell (Stand 2026-05)
-    # Günstiger als Deepseek auf Prompt-Seite, sehr gutes Deutsch + Code
-    BUILD_PRIMARY = "nousresearch/hermes-4-70b"
-    BUILD_CHEAP   = "google/gemini-flash-1.5"    # Fallback wenn Budget knapp
-    CARE_PRIMARY  = "nousresearch/hermes-4-70b"  # Gleiche Qualität wie Build
-    CARE_CHEAP    = "google/gemini-flash-1.5"
-    LEGAL         = "anthropic/claude-3.7-sonnet" # Jurist-Lauf (eigener Topf)
+    """Rollen, nicht Modelle. Welches Modell eine Rolle ausfüllt, steht in
+    model_config.json — der wöchentliche Check tauscht es aus, wenn ein
+    Anbieter ein Modell einstellt. Die Werte hier sind nur der Notfall-Fallback.
+
+    Grundsatz: Gebaut wird mit Modellen mit offenen Gewichten (offene Software
+    aus offenen Modellen). Recherche und Rechtsprüfung laufen selten und
+    dürfen ein stärkeres Modell nutzen — eigener Budget-Topf.
+    """
+    BUILD_PRIMARY = "deepseek/deepseek-v4-pro"
+    BUILD_ESCALATION = "moonshotai/kimi-k2.7-code"
+    BUILD_CHEAP   = "qwen/qwen3-coder-next"
+    CARE_PRIMARY  = "deepseek/deepseek-v4-pro"
+    CARE_CHEAP    = "qwen/qwen3-coder-next"
+    LEGAL         = "anthropic/claude-sonnet-5.5"
+    RESEARCH      = "anthropic/claude-sonnet-5.5"
+
+
+def _load_config() -> dict:
+    if MODEL_CONFIG_FILE.exists():
+        try:
+            return json.loads(MODEL_CONFIG_FILE.read_text()).get("roles", {})
+        except json.JSONDecodeError:
+            pass
+    return {}
+
+
+def get_model(role: "ModelChoice") -> str:
+    """Modell-ID für eine Rolle — aus model_config.json, sonst Fallback."""
+    return _load_config().get(role.name.lower(), role.value)
 
 
 def get_active_build_model() -> str:
-    """Liest aktives Build-Modell aus model_config.json.
-
-    Erlaubt dem wöchentlichen Update-Check, das Modell zu wechseln ohne
-    Code-Änderung. Fällt auf ModelChoice.BUILD_PRIMARY zurück wenn Datei fehlt.
-    """
-    if MODEL_CONFIG_FILE.exists():
-        try:
-            cfg = json.loads(MODEL_CONFIG_FILE.read_text())
-            return cfg.get("build_primary", ModelChoice.BUILD_PRIMARY.value)
-        except (json.JSONDecodeError, KeyError):
-            pass
-    return ModelChoice.BUILD_PRIMARY.value
+    return get_model(ModelChoice.BUILD_PRIMARY)
 
 
 @dataclass
@@ -77,11 +88,7 @@ class OpenRouterClient:
         temperature: float = 0.2,
         extra: dict[str, Any] | None = None,
     ) -> LLMResponse:
-        # Bei BUILD_PRIMARY dynamisch das konfigurierte Modell nutzen
-        if isinstance(model, ModelChoice) and model == ModelChoice.BUILD_PRIMARY:
-            model_id = get_active_build_model()
-        else:
-            model_id = model.value if isinstance(model, ModelChoice) else model
+        model_id = get_model(model) if isinstance(model, ModelChoice) else model
 
         body = {
             "model": model_id,
@@ -120,18 +127,13 @@ class OpenRouterClient:
     @staticmethod
     def estimate_cost(model: ModelChoice | str, prompt_tokens: int, completion_tokens: int) -> float:
         """Best-Effort-Schätzung — wird nach Call durch tatsächliche Kosten ersetzt."""
-        # Preise pro 1M Tokens (Stand 2026-05, in USD)
+        # Preise pro 1M Tokens (Stand 2026-10, in USD)
         pricing: dict[str, tuple[float, float]] = {
-            "nousresearch/hermes-4-70b":         (0.130, 0.400),  # Hermes 4 70B
-            "nousresearch/hermes-4-405b":        (1.000, 3.000),  # Hermes 4 405B
-            "nousresearch/hermes-3-llama-3.1-70b": (0.700, 0.700),
-            "google/gemini-flash-1.5":           (0.075, 0.300),
-            "deepseek/deepseek-chat":            (0.140, 0.280),
-            "anthropic/claude-3.7-sonnet":       (3.000, 15.000),
+            "deepseek/deepseek-v4-pro":      (0.21, 0.42),
+            "moonshotai/kimi-k2.7-code":     (0.67, 3.35),
+            "qwen/qwen3-coder-next":         (0.12, 0.80),
+            "anthropic/claude-sonnet-5.5":   (2.00, 10.00),
         }
-        m = model.value if isinstance(model, ModelChoice) else model
-        # Auch für dynamisch geladene Modelle
-        if m == ModelChoice.BUILD_PRIMARY.value:
-            m = get_active_build_model()
+        m = get_model(model) if isinstance(model, ModelChoice) else model
         p_in, p_out = pricing.get(m, (0.5, 1.5))
         return (prompt_tokens / 1_000_000) * p_in + (completion_tokens / 1_000_000) * p_out
