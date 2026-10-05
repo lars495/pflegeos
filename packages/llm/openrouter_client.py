@@ -112,7 +112,10 @@ class OpenRouterClient:
             r.raise_for_status()
             data = r.json()
 
-        choice = data["choices"][0]["message"]["content"]
+        # content kann null sein (z.B. Antwort nur aus Reasoning oder am
+        # Token-Limit abgebrochen) — als leere Antwort weitergeben, damit der
+        # Aufrufer einen neuen Versuch macht statt abzustürzen (L11)
+        choice = data["choices"][0]["message"].get("content") or ""
         usage = data.get("usage", {})
         cost = float(usage.get("cost", 0.0))
 
