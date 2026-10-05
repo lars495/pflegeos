@@ -57,9 +57,8 @@ Recherchiere international mit der Websuche. Nenne nur Quellen, die du tatsächl
 gefunden hast, mit URL. Unterscheide klar zwischen belegter Evidenz und Einzelbeispiel.
 Keine Marketingaussagen von Herstellern ungeprüft übernehmen.
 
-Antwortformat (exakt, Markdown):
+Antwortformat (Markdown):
 
-===BERICHT===
 ## Kernerkenntnisse
 (4-7 Punkte, je mit Quelle)
 ## Gute Beispiele international
@@ -67,14 +66,14 @@ Antwortformat (exakt, Markdown):
 ## Was das für PflegeOS bedeutet
 (kurz)
 ## Quellen
-(nummerierte Liste mit URLs)
-===IDEEN===
-[{"titel": "...", "beschreibung": "2-4 Sätze, konkret umsetzbar als kleines Feature",
-  "inspiration": "woher (mit Quelle)", "pz": 0-5, "emp": 0-5, "kom": 0-5,
-  "prinzipien_check": "ein Satz: warum passt das zu den Prinzipien, oder welches Risiko"}]
-===ENDE===
+(nummerierte Liste mit URLs)"""
 
-3 bis 6 Ideen. pz = Personenzentrierung, emp = Empowerment, kom = Komplexität (5 = sehr aufwendig).
+IDEEN_SYSTEM = """Leite aus dem Recherchebericht 3 bis 6 Ideen für PflegeOS ab.
+Antworte NUR mit einem JSON-Array:
+[{"titel": "...", "beschreibung": "2-4 Sätze, konkret umsetzbar als kleines Feature",
+  "inspiration": "woher (mit Quellen-Nr. aus dem Bericht)", "pz": 0-5, "emp": 0-5, "kom": 0-5,
+  "prinzipien_check": "ein Satz: warum passt das zu den Prinzipien, oder welches Risiko"}]
+pz = Personenzentrierung, emp = Empowerment, kom = Komplexität (5 = sehr aufwendig).
 Bevorzuge kleine, sichtbare Features, die auf dem bestehenden Stand aufbauen:
 Bewohnerprofil mit Biografie und Wünschen, Reflexions-Tool für Pflegekräfte,
 Audit-Log, servergerenderte Oberfläche."""
@@ -98,26 +97,36 @@ async def run(thema: str) -> tuple[str, list[dict], float]:
             {"role": "user", "content": f"Schwerpunkt dieser Recherche:\n\n{thema}"},
         ],
         model=ModelChoice.RESEARCH,
-        max_tokens=8_000,
+        max_tokens=12_000,
         temperature=0.3,
         # OpenRouter-Websuche, für jedes Modell verfügbar
         extra={"plugins": [{"id": "web", "max_results": 8}]},
     )
     guard.commit(resp.cost_usd or est, pot="research")
 
-    text = resp.text
-    m_b = re.search(r"===BERICHT===\s*(.*?)\s*===IDEEN===", text, re.S)
-    m_i = re.search(r"===IDEEN===\s*(.*?)\s*===ENDE===", text, re.S)
-    bericht = m_b.group(1).strip() if m_b else text.strip()
-    ideen: list[dict] = []
-    if m_i:
-        raw = m_i.group(1).strip().strip("`")
-        raw = raw[raw.find("["): raw.rfind("]") + 1]
-        try:
-            ideen = json.loads(raw)
-        except json.JSONDecodeError:
-            print("[research] Ideen-JSON nicht lesbar — nur Bericht gespeichert")
-    return bericht, ideen, resp.cost_usd
+    bericht = resp.text.strip()
+    ideen, cost2 = await ideen_ableiten(client, guard, bericht)
+    return bericht, ideen, (resp.cost_usd or 0) + cost2
+
+
+async def ideen_ableiten(client, guard, bericht: str) -> tuple[list[dict], float]:
+    """Zweiter, kleiner Aufruf ohne Websuche — robuster als alles in einer Antwort."""
+    est = OpenRouterClient.estimate_cost(ModelChoice.RESEARCH, 8_000, 2_500)
+    guard.reserve(est, pot="research")
+    resp = await client.chat(
+        messages=[{"role": "system", "content": IDEEN_SYSTEM},
+                  {"role": "user", "content": bericht}],
+        model=ModelChoice.RESEARCH, max_tokens=3_000, temperature=0.3,
+    )
+    guard.commit(resp.cost_usd or est, pot="research")
+    raw = resp.text
+    raw = raw[raw.find("["): raw.rfind("]") + 1]
+    try:
+        return json.loads(raw), resp.cost_usd or 0
+    except json.JSONDecodeError:
+        print("[research] Ideen-JSON nicht lesbar")
+        return [], resp.cost_usd or 0
+
 
 
 def write_outputs(thema: str, bericht: str, ideen: list[dict], cost: float) -> list[Path]:
@@ -164,7 +173,22 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--thema")
     ap.add_argument("--no-push", action="store_true")
+    ap.add_argument("--ideen-aus", help="nur Ideen aus einem vorhandenen Bericht ableiten")
     args = ap.parse_args()
+
+    if args.ideen_aus:
+        src = Path(args.ideen_aus)
+        text = src.read_text()
+        thema = re.search(r"\*\*Schwerpunkt:\*\* (.*)", text).group(1)
+        bericht = text.split("\n", 3)[3].split("\n---\n\n## Abgeleitete Ideen")[0]
+        async def _nur_ideen():
+            return await ideen_ableiten(OpenRouterClient(timeout_s=300.0), BudgetGuard(), bericht)
+        ideen, cost = asyncio.run(_nur_ideen())
+        written = write_outputs(thema, bericht.split("**Schwerpunkt:**")[-1].split("\n", 1)[-1].strip(), ideen, cost)
+        print(f"[research] {len(ideen)} Ideen aus {src.name}")
+        if not args.no_push:
+            git_commit_push(written, f"docs(research): Ideen aus {src.name} — {len(ideen)} Ideen")
+        return 0
 
     thema = args.thema or THEMEN[dt.date.today().month % len(THEMEN)]
     print(f"[research] Schwerpunkt: {thema[:90]}…")
