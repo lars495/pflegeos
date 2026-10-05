@@ -1,22 +1,25 @@
 ---
 id: T028
-title: "SBAR-Vorlage für den Arztanruf"
+title: SBAR-Vorlage für den Arztanruf
 roadmap_item: Recherche 2026-10-05 — SBAR-Vorlage für den Arztanruf
-depends_on: [T027, T026]
+depends_on:
+- T027
+- T026
 target_files:
-  - apps/api/templates/sbar.html
-  - apps/api/templates/_beobachtungen.html
-  - apps/api/web.py
+- apps/api/templates/sbar.html
+- apps/api/templates/_beobachtungen.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/templates/_beobachtungen.html
-  - apps/api/templates/beobachtung_neu.html
-  - apps/api/models/sbar.py
-  - apps/api/models/beobachtung.py
-  - tests/task_tests/test_t028_ui_sbar.py
+- apps/api/web.py
+- apps/api/templates/_beobachtungen.html
+- apps/api/templates/beobachtung_neu.html
+- apps/api/models/sbar.py
+- apps/api/models/beobachtung.py
+- tests/task_tests/test_t028_ui_sbar.py
 test_command: pytest -q tests/task_tests/test_t028_ui_sbar.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-10-05'
 ---
 
 Eine Gesprächsstütze für den Anruf bei Ärzt:innen. **Wichtig (Empowerment):**

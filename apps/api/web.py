@@ -31,6 +31,7 @@ from apps.api.models.resident import Resident
 from apps.api.models.reflection import Reflection
 from apps.api.models.beobachtung import Beobachtung
 from apps.api.models.hinweis import PersonHinweis
+from apps.api.models.sbar import SbarNotiz
 from apps.api.audit import log_action
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -129,6 +130,94 @@ async def ui_beobachtung_speichern(resident_id: str, request: Request,
     await session.flush()
     await log_action(session, actor=author.strip(), action="beobachtung.created",
                      resource_type="resident", resource_id=resident_id)
+    await session.commit()
+    return RedirectResponse(f"/ui/bewohner/{resident_id}", status_code=303)
+
+
+@router.get("/ui/bewohner/{resident_id}/sbar", response_class=HTMLResponse)
+async def ui_sbar_formular(resident_id: str, request: Request,
+                           session: AsyncSession = Depends(get_session)):
+    person = await session.get(Resident, resident_id)
+    if person is None:
+        raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
+
+    seit = dt.datetime.utcnow() - dt.timedelta(hours=24)
+    beob_result = await session.execute(
+        select(Beobachtung)
+        .where(Beobachtung.resident_id == resident_id,
+               Beobachtung.created_at >= seit)
+        .order_by(Beobachtung.created_at.desc())
+    )
+    beobachtungen = beob_result.scalars().all()
+
+    situation = "\n".join(
+        b.kategorie + (f" — {b.notiz}" if b.notiz else "")
+        for b in beobachtungen
+    )
+    hintergrund = (
+        person.name
+        + (f", Zimmer {person.zimmer}" if person.zimmer else "")
+        + ". "
+        + (person.biografie or "")[:200]
+    )
+
+    return templates.TemplateResponse(
+        request, "sbar.html",
+        {
+            "person": person,
+            "situation": situation,
+            "hintergrund": hintergrund,
+            "einschaetzung": "",
+            "empfehlung": "",
+        }
+    )
+
+
+@router.post("/ui/bewohner/{resident_id}/sbar")
+async def ui_sbar_speichern(
+    resident_id: str,
+    request: Request,
+    author: str = Form(""),
+    situation: str = Form(""),
+    hintergrund: str = Form(""),
+    einschaetzung: str = Form(""),
+    empfehlung: str = Form(""),
+    session: AsyncSession = Depends(get_session),
+):
+    person = await session.get(Resident, resident_id)
+    if person is None:
+        raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
+
+    if not author.strip():
+        return templates.TemplateResponse(
+            request, "sbar.html",
+            {
+                "person": person,
+                "situation": situation,
+                "hintergrund": hintergrund,
+                "einschaetzung": einschaetzung,
+                "empfehlung": empfehlung,
+                "fehler": "Bitte dein Kürzel eintragen.",
+            }
+        )
+
+    notiz = SbarNotiz(
+        resident_id=resident_id,
+        author=author.strip(),
+        situation=situation,
+        hintergrund=hintergrund,
+        einschaetzung=einschaetzung,
+        empfehlung=empfehlung,
+    )
+    session.add(notiz)
+    await session.flush()
+    await log_action(
+        session,
+        actor=author.strip(),
+        action="sbar.created",
+        resource_type="resident",
+        resource_id=resident_id,
+    )
     await session.commit()
     return RedirectResponse(f"/ui/bewohner/{resident_id}", status_code=303)
 

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}PflegeOS — Arztanruf vorbereiten{% endblock %}
+
+{% block content %}
+<h1>Arztanruf vorbereiten</h1>
+<p class="lead">{{ person.name }}</p>
+
+<p class="erfolg">Einschätzung und Empfehlung schreibst du — du kennst die Person.</p>
+
+{% if fehler %}
+  <p class="hinweis">{{ fehler }}</p>
+{% endif %}
+
+<form method="post">
+  <label for="author">Dein Kürzel</label>
+  <input type="text" id="author" name="author" required class="form-control">
+
+  <label for="situation">S — Situation: Was ist los?</label>
+  <textarea id="situation" name="situation" class="form-control">{{ situation }}</textarea>
+
+  <label for="hintergrund">B — Hintergrund</label>
+  <textarea id="hintergrund" name="hintergrund" class="form-control">{{ hintergrund }}</textarea>
+
+  <label for="einschaetzung">A — Deine Einschätzung</label>
+  <textarea id="einschaetzung" name="einschaetzung" class="form-control">{{ einschaetzung }}</textarea>
+
+  <label for="empfehlung">R — Was schlägst du vor?</label>
+  <textarea id="empfehlung" name="empfehlung" class="form-control">{{ empfehlung }}</textarea>
+
+  <button type="submit" class="btn">Notiz speichern</button>
+  <a href="/ui/bewohner/{{ person.id }}" class="btn btn-secondary">Zurück</a>
+</form>
+{% endblock %}
