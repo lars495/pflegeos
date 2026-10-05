@@ -194,6 +194,29 @@ sondern über eine öffentliche Zwischenstufe (`ideas/`). Die erste Recherche
 (Übergaben) war bemerkenswert quellenkritisch — sie markierte Herstellerstudien
 und fehlende Evidenz für Pflegeheime ausdrücklich.
 
+## L11 · Wer eine Datei komplett neu schreibt, kann alles darin still verändern (05.10.)
+
+**Was passiert ist:** Zehn Tasks an einem Nachmittag, neun im ersten oder
+zweiten Versuch grün. Bei der letzten (T033) sollte das Modell nur eine Abfrage
+ergänzen. Weil Tasks ihre Dateien immer komplett neu ausgeben, schrieb es die
+ganze `web.py` — und veränderte dabei nebenbei drei Dinge, um die es nie ging:
+Ein Formularfeld wurde umbenannt, eine ganze Seite (Team-Feedback) durch frei
+erfundene Routen ersetzt, und eine Route namens `/ui/wuerfel` kam hinzu.
+
+Der Task-Test war grün. Die Tests der entfernten Seite meldeten keinen Fehler,
+sondern übersprangen sich — sie waren so gebaut, dass sie bei fehlender Route
+„noch nicht gebaut" annehmen. Nur die umbenannte Reflexion fiel auf.
+
+Außerdem: Das Modell lieferte gelegentlich gar keine Antwort (`content: null`),
+und der Agent stürzte daran ab, statt neu zu versuchen.
+
+**Erkenntnis:** Je größer eine Datei wird, desto riskanter ist „gib sie komplett
+neu aus". Ein Test, der nur die neue Funktion prüft, sieht nicht, was nebenbei
+kaputtgeht. Seitdem läuft nach jedem grünen Task-Test die gesamte Suite, und eine
+Bestandsliste aller gebauten Routen meldet Verschwundenes als Fehler. Langfristig
+müsste `web.py` in kleinere Dateien zerfallen — eine Datei pro Bereich —, damit
+ein Modell nie mehr umschreiben muss, als es soll.
+
 ---
 
 ## Was ein echtes Produkt anders bräuchte
