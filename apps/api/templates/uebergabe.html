@@ -16,6 +16,14 @@
         {% endif %}
       </h2>
 
+      {% set hw = hinweise.get(p.id, []) %}
+      {% if hw %}
+        <div class="hinweis"><!-- PERSON-HINWEIS -->
+          <strong>Wunsch für die Übergabe:</strong>
+          <ul>{% for h in hw %}<li>{{ h.text }}</li>{% endfor %}</ul>
+        </div>
+      {% endif %}
+
       {% if p.wuensche %}
         <ul class="wunsch-liste">
           {% for w in p.wuensche %}

@@ -1,19 +1,21 @@
 ---
 id: T026
-title: "Hinweise der Person in der Übergabe zuerst zeigen"
+title: Hinweise der Person in der Übergabe zuerst zeigen
 roadmap_item: Recherche 2026-10-05 — Bewohnerblick auf die Übergabe
-depends_on: [T025]
+depends_on:
+- T025
 target_files:
-  - apps/api/templates/uebergabe.html
-  - apps/api/web.py
+- apps/api/templates/uebergabe.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/templates/uebergabe.html
-  - apps/api/models/hinweis.py
-  - tests/task_tests/test_t026_ui_hinweise_in_uebergabe.py
+- apps/api/web.py
+- apps/api/templates/uebergabe.html
+- apps/api/models/hinweis.py
+- tests/task_tests/test_t026_ui_hinweise_in_uebergabe.py
 test_command: pytest -q tests/task_tests/test_t026_ui_hinweise_in_uebergabe.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-10-05'
 ---
 
 In der Übergabe soll die Stimme der Person **zuerst** kommen — noch vor Wünschen

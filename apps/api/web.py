@@ -273,5 +273,10 @@ async def ui_uebergabe(request: Request, session: AsyncSession = Depends(get_ses
     je_person: dict[str, list] = {}
     for b in beob:
         je_person.setdefault(b.resident_id, []).append(b)
+    alle_hinweise = (await session.execute(
+        select(PersonHinweis).order_by(PersonHinweis.created_at))).scalars().all()
+    hinweise: dict[str, list] = {}
+    for h in alle_hinweise:
+        hinweise.setdefault(h.resident_id, []).append(h)
     return templates.TemplateResponse(request, "uebergabe.html",
-        {"personen": personen, "beobachtungen": je_person})
+        {"personen": personen, "beobachtungen": je_person, "hinweise": hinweise})
