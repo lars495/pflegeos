@@ -2,21 +2,23 @@
 id: T023
 title: Übergabeansicht — die Person als roter Faden
 roadmap_item: Recherche 2026-10-05 — Übergabeansicht mit Biografie als roter Faden
-depends_on: [T022]
+depends_on:
+- T022
 target_files:
-  - apps/api/templates/uebergabe.html
-  - apps/api/templates/base.html
-  - apps/api/web.py
+- apps/api/templates/uebergabe.html
+- apps/api/templates/base.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/templates/base.html
-  - apps/api/templates/_beobachtungen.html
-  - apps/api/models/resident.py
-  - apps/api/models/beobachtung.py
-  - tests/task_tests/test_t023_ui_uebergabe.py
+- apps/api/web.py
+- apps/api/templates/base.html
+- apps/api/templates/_beobachtungen.html
+- apps/api/models/resident.py
+- apps/api/models/beobachtung.py
+- tests/task_tests/test_t023_ui_uebergabe.py
 test_command: pytest -q tests/task_tests/test_t023_ui_uebergabe.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-10-05'
 ---
 
 Eine Übergabeseite unter `/ui/uebergabe`. Die Recherche fand kaum Evidenz dafür,

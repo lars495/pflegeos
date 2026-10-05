@@ -17,6 +17,7 @@ Alle Routen hängen unter /ui — die JSON-API unter /v1 bleibt unberührt.
 
 from __future__ import annotations
 
+import datetime as dt
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, Request, HTTPException, Form
@@ -234,3 +235,17 @@ async def ui_reflexion_speichern(
     ))
     await session.commit()
     return RedirectResponse(f"/ui/reflexion/meine?author={author.strip()}", status_code=303)
+
+
+@router.get("/ui/uebergabe", response_class=HTMLResponse)
+async def ui_uebergabe(request: Request, session: AsyncSession = Depends(get_session)):
+    personen = (await session.execute(select(Resident).order_by(Resident.zimmer, Resident.name))).scalars().all()
+    seit = dt.datetime.utcnow() - dt.timedelta(hours=24)
+    beob = (await session.execute(
+        select(Beobachtung).where(Beobachtung.created_at >= seit)
+        .order_by(Beobachtung.created_at.desc()))).scalars().all()
+    je_person: dict[str, list] = {}
+    for b in beob:
+        je_person.setdefault(b.resident_id, []).append(b)
+    return templates.TemplateResponse(request, "uebergabe.html",
+        {"personen": personen, "beobachtungen": je_person})

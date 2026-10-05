@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Übergabe</h1>
+<p class="lead">Wer ist heute wie da?</p>
+
+{% if not personen %}
+  <p class="leer">Noch niemand angelegt.</p>
+{% else %}
+  {% for p in personen %}
+    <div class="card">
+      <h2>
+        {{ p.name }}
+        {% if p.zimmer %}
+          <span class="muted">Zimmer {{ p.zimmer }}</span>
+        {% endif %}
+      </h2>
+
+      {% if p.wuensche %}
+        <ul class="wunsch-liste">
+          {% for w in p.wuensche %}
+            <li>{{ w }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if p.biografie %}
+        <p class="biografie">{{ p.biografie|truncate(200) }}</p>
+      {% endif %}
+
+      <p>Seit gestern:</p>
+      {% set beobs = beobachtungen.get(p.id, []) %}
+      {% if beobs %}
+        <ul class="wunsch-liste">
+          {% for b in beobs %}
+            <li>
+              <strong>{{ b.kategorie }}</strong>{% if b.notiz %}: {{ b.notiz }}{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">Nichts Besonderes gemeldet.</p>
+      {% endif %}
+    </div>
+  {% endfor %}
+{% endif %}
+{% endblock %}
