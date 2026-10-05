@@ -46,6 +46,11 @@ Beschreibung, exakte Feldlisten, Signaturen, Beispiele.
 
 Regeln für gute Tasks (beim monatlichen Zerlegen beachten):
 
+0. **Oberfläche: eine Datei pro Bereich** unter `apps/api/ui/`. Eine Task
+   ändert nur die Bereichsdatei, die sie betrifft — nie `web.py` als Ganzes
+   (L11). Neuer Bereich = neue Datei + Eintrag in `BEREICHE` in `web.py`.
+   Neue Routen zusätzlich in `tests/test_routen_bestand.py` eintragen.
+
 1. **Max. 2 target_files** — eine Implementierungsdatei, ggf. eine Registrierung
 2. **Test zuerst schreiben** — er beginnt mit `pytest.importorskip(...)`,
    damit die Gesamt-Suite nicht an noch-nicht-existierenden Modulen stirbt
