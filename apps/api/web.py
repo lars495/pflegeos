@@ -34,6 +34,7 @@ from apps.api.models.beobachtung import Beobachtung
 from apps.api.models.hinweis import PersonHinweis
 from apps.api.models.sbar import SbarNotiz
 from apps.api.models.team_feedback import TeamFeedback
+from apps.api.models.uebergabe_notiz import UebergabeNotiz
 from apps.api.audit import log_action
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -64,6 +65,13 @@ def initialen(name: str) -> str:
     return (teile[0][0] + teile[-1][0]).upper()
 
 templates.env.filters["initialen"] = initialen
+
+
+async def _notizen_fragment(request, session, person):
+    notizen = (await session.execute(select(UebergabeNotiz)
+        .where(UebergabeNotiz.resident_id == person.id)
+        .order_by(UebergabeNotiz.created_at.desc()).limit(10))).scalars().all()
+    return templates.TemplateResponse(request, "_notizen.html", {"person": person, "notizen": notizen})
 
 
 @router.get("/ui", response_class=HTMLResponse)
@@ -241,9 +249,16 @@ async def ui_bewohner_detail(
         select(PersonHinweis).where(PersonHinweis.resident_id == resident_id)
         .order_by(PersonHinweis.created_at))
     hinweise = hinweise_result.scalars().all()
+    notizen_result = await session.execute(
+        select(UebergabeNotiz)
+        .where(UebergabeNotiz.resident_id == resident_id)
+        .order_by(UebergabeNotiz.created_at.desc())
+        .limit(10)
+    )
+    notizen = notizen_result.scalars().all()
     return templates.TemplateResponse(request, "bewohner_detail.html",
                                       {"person": person, "beobachtungen": beobachtungen,
-                                       "hinweise": hinweise})
+                                       "hinweise": hinweise, "notizen": notizen})
 
 
 @router.get("/ui/bewohner/{resident_id}/biografie", response_class=HTMLResponse)
@@ -311,6 +326,52 @@ async def ui_hinweis_hinzufuegen(
         .order_by(PersonHinweis.created_at))).scalars().all()
     return templates.TemplateResponse(request, "_hinweise.html",
                                       {"person": person, "hinweise": hinweise})
+
+
+@router.post("/ui/bewohner/{resident_id}/notizen", response_class=HTMLResponse)
+async def ui_notiz_erstellen(
+    resident_id: str,
+    request: Request,
+    author: str = Form(""),
+    text: str = Form(""),
+    session: AsyncSession = Depends(get_session),
+):
+    person = await session.get(Resident, resident_id)
+    if person is None:
+        raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
+    if author.strip() and text.strip():
+        notiz = UebergabeNotiz(
+            resident_id=resident_id,
+            author=author.strip(),
+            text=text.strip(),
+            status="entwurf",
+        )
+        session.add(notiz)
+        await session.commit()
+    return await _notizen_fragment(request, session, person)
+
+
+@router.post("/ui/notizen/{notiz_id}/freigeben", response_class=HTMLResponse)
+async def ui_notiz_freigeben(
+    notiz_id: str,
+    request: Request,
+    session: AsyncSession = Depends(get_session),
+):
+    notiz = await session.get(UebergabeNotiz, notiz_id)
+    if notiz is None:
+        raise HTTPException(status_code=404, detail="Notiz nicht gefunden")
+    notiz.status = "freigegeben"
+    notiz.freigegeben_at = dt.datetime.utcnow()
+    await log_action(
+        session,
+        actor=notiz.author,
+        action="notiz.freigegeben",
+        resource_type="resident",
+        resource_id=notiz.resident_id,
+    )
+    await session.commit()
+    person = await session.get(Resident, notiz.resident_id)
+    return await _notizen_fragment(request, session, person)
 
 
 @router.get("/ui/reflexion", response_class=HTMLResponse)

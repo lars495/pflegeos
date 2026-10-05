@@ -1,0 +1,32 @@
+<div id="notizen-block">
+  {% if notizen %}
+    {% for n in notizen %}
+      <div class="card">
+        <p>{{ n.text }}</p>
+        <p class="muted">{{ n.author }}</p>
+        {% if n.status == "entwurf" %}
+          <span>Entwurf</span>
+          <button hx-post="/ui/notizen/{{ n.id }}/freigeben"
+                  hx-target="#notizen-block"
+                  hx-swap="outerHTML"
+                  class="btn">Freigeben</button>
+        {% else %}
+          <span>Freigegeben</span>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="leer">Noch keine Notizen.</p>
+  {% endif %}
+
+  <form hx-post="/ui/bewohner/{{ person.id }}/notizen"
+        hx-target="#notizen-block"
+        hx-swap="outerHTML">
+    <label for="author">Dein Kürzel</label>
+    <input type="text" id="author" name="author" placeholder="Dein Kürzel">
+    <label for="text">Notiz für die nächste Schicht</label>
+    <textarea id="text" name="text" placeholder="Notiz für die nächste Schicht"></textarea>
+    <button type="submit" class="btn">Als Entwurf speichern</button>
+  </form>
+  <p class="muted">Erst nach der Freigabe erscheint die Notiz in der Übergabe.</p>
+</div>

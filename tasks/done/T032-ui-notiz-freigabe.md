@@ -1,22 +1,25 @@
 ---
 id: T032
-title: "Übergabe-Notiz schreiben und freigeben"
+title: Übergabe-Notiz schreiben und freigeben
 roadmap_item: Recherche 2026-10-05 — Übergabe-Notiz mit Freigabe
-depends_on: [T031, T030]
+depends_on:
+- T031
+- T030
 target_files:
-  - apps/api/templates/_notizen.html
-  - apps/api/templates/bewohner_detail.html
-  - apps/api/web.py
+- apps/api/templates/_notizen.html
+- apps/api/templates/bewohner_detail.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/templates/bewohner_detail.html
-  - apps/api/templates/_wuensche.html
-  - apps/api/models/uebergabe_notiz.py
-  - apps/api/audit.py
-  - tests/task_tests/test_t032_ui_notiz_freigabe.py
+- apps/api/web.py
+- apps/api/templates/bewohner_detail.html
+- apps/api/templates/_wuensche.html
+- apps/api/models/uebergabe_notiz.py
+- apps/api/audit.py
+- tests/task_tests/test_t032_ui_notiz_freigabe.py
 test_command: pytest -q tests/task_tests/test_t032_ui_notiz_freigabe.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 2
+completed_at: '2026-10-05'
 ---
 
 Auf der Profilseite schreibt die Pflegekraft eine Notiz für die nächste Schicht.
