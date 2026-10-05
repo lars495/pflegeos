@@ -1,17 +1,18 @@
 ---
 id: T031
-title: "Modell: Übergabe-Notiz mit Freigabe-Status"
+title: 'Modell: Übergabe-Notiz mit Freigabe-Status'
 roadmap_item: Recherche 2026-10-05 — Übergabe-Notiz mit Freigabe
 depends_on: []
 target_files:
-  - apps/api/models/uebergabe_notiz.py
+- apps/api/models/uebergabe_notiz.py
 context_files:
-  - apps/api/models/beobachtung.py
-  - apps/api/db.py
-  - tests/task_tests/test_t031_notiz_modell.py
+- apps/api/models/beobachtung.py
+- apps/api/db.py
+- tests/task_tests/test_t031_notiz_modell.py
 test_command: pytest -q tests/task_tests/test_t031_notiz_modell.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-10-05'
 ---
 
 Notizen sind zuerst **Entwürfe** und werden erst durch ausdrückliche Freigabe
