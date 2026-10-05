@@ -138,7 +138,12 @@ async def ui_bewohner_detail(
     person = await session.get(Resident, resident_id)
     if person is None:
         raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
-    return templates.TemplateResponse(request, "bewohner_detail.html", {"person": person})
+    result = await session.execute(
+        select(Beobachtung).where(Beobachtung.resident_id == resident_id)
+        .order_by(Beobachtung.created_at.desc()).limit(5))
+    beobachtungen = result.scalars().all()
+    return templates.TemplateResponse(request, "bewohner_detail.html",
+                                      {"person": person, "beobachtungen": beobachtungen})
 
 
 @router.get("/ui/bewohner/{resident_id}/biografie", response_class=HTMLResponse)

@@ -1,0 +1,13 @@
+{% if beobachtungen %}
+  <ul class="wunsch-liste">
+    {% for b in beobachtungen %}
+      <li>
+        <strong>{{ b.kategorie }}</strong>{% if b.notiz %}: {{ b.notiz }}{% endif %}
+        <br><span class="muted">{{ b.created_at.strftime('%d.%m. %H:%M') }} — {{ b.author }}</span>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="leer">Keine Beobachtungen in letzter Zeit.</p>
+{% endif %}
+<a class="btn-secondary" href="/ui/bewohner/{{ person.id }}/beobachtung">Mir ist etwas aufgefallen</a>

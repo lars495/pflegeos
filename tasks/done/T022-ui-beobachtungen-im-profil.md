@@ -2,20 +2,22 @@
 id: T022
 title: Beobachtungen auf der Profilseite zeigen
 roadmap_item: Recherche 2026-10-05 — Stop-and-Watch-Karte im Bewohnerprofil
-depends_on: [T021]
+depends_on:
+- T021
 target_files:
-  - apps/api/templates/_beobachtungen.html
-  - apps/api/templates/bewohner_detail.html
-  - apps/api/web.py
+- apps/api/templates/_beobachtungen.html
+- apps/api/templates/bewohner_detail.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/templates/bewohner_detail.html
-  - apps/api/templates/_wuensche.html
-  - apps/api/models/beobachtung.py
-  - tests/task_tests/test_t022_ui_beobachtungen_im_profil.py
+- apps/api/web.py
+- apps/api/templates/bewohner_detail.html
+- apps/api/templates/_wuensche.html
+- apps/api/models/beobachtung.py
+- tests/task_tests/test_t022_ui_beobachtungen_im_profil.py
 test_command: pytest -q tests/task_tests/test_t022_ui_beobachtungen_im_profil.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-10-05'
 ---
 
 Die gemeldeten Beobachtungen sollen auf der Profilseite sichtbar sein — **unter**
