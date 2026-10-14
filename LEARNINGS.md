@@ -217,6 +217,30 @@ Bestandsliste aller gebauten Routen meldet Verschwundenes als Fehler. Langfristi
 müsste `web.py` in kleinere Dateien zerfallen — eine Datei pro Bereich —, damit
 ein Modell nie mehr umschreiben muss, als es soll.
 
+## L12 · Der Agent holt sich seine Arbeit selbst — unter Aufsicht von Prüfregeln (14.10.)
+
+**Was passiert ist:** Zweimal stand das Projekt wochenlang still, nur weil
+niemand neue Tasks nachgelegt hatte (27.08.–05.10., dann wieder ab 06.10.). Der
+Zuschnitt von Ideen in Tasks war die letzte Stelle, die noch einen Menschen
+brauchte. Jetzt übernimmt das ein Planer: Ist der Backlog leer, nimmt er die
+beste Idee aus `ideas/inbox/` und lässt ein starkes Modell Tasks samt Tests
+schreiben.
+
+Weil L4, L9 und L11 zeigen, dass genau beim Zuschnitt die Fehler entstehen,
+wird nichts davon ungeprüft übernommen. Feste Prüfregeln entscheiden: Stimmen
+die Pfade? Laufen die Tests? Bleibt die Gesamtsuite grün? Ist kein neuer Test
+schon vor dem Bau grün (dann würde er nichts prüfen)?
+
+Der erste Probelauf wurde zu Recht verworfen: Die Antwort war am Token-Limit
+abgeschnitten, die letzte Testdatei kaputt. Der zweite bestand alle Prüfungen —
+drei Tasks für 30 Cent.
+
+**Erkenntnis:** Autonomie heißt hier nicht, dem Modell zu vertrauen, sondern
+die Stelle, an der früher ein Mensch hingeschaut hat, durch überprüfbare
+Regeln zu ersetzen. Was die Regeln nicht prüfen können — ob eine Idee wirklich
+gut für die Pflege ist —, bleibt offen: Diese Bewertung kommt aus der Recherche
+und von der Community, nicht vom Planer.
+
 ---
 
 ## Was ein echtes Produkt anders bräuchte
