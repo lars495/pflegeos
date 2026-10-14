@@ -151,6 +151,14 @@ def pruefe(files: dict[str, str], start_id: int) -> list[str]:
     if not 2 <= len(tasks) <= 3:
         fehler.append(f"{len(tasks)} Tasks — erlaubt sind 2 bis 3")
     erwartet = {f"T{start_id + i:03d}" for i in range(len(tasks))}
+    # Dateien, die eine der neuen Tasks anlegt, dürfen spätere Tasks als Kontext nutzen
+    alle_targets: set[str] = set()
+    for c in tasks.values():
+        m = re.match(r"^---\n(.*?)\n---\n", c, re.S)
+        try:
+            alle_targets |= set((yaml.safe_load(m.group(1)) or {}).get("target_files") or []) if m else set()
+        except yaml.YAMLError:
+            pass
     gefunden = set()
     for p, c in tasks.items():
         m = re.match(r"^---\n(.*?)\n---\n", c, re.S)
@@ -177,7 +185,7 @@ def pruefe(files: dict[str, str], start_id: int) -> list[str]:
         if test_pfad not in tests:
             fehler.append(f"{tid}: test_command zeigt nicht auf eine mitgelieferte Testdatei ({cmd})")
         for c in fm.get("context_files") or []:
-            if not (ROOT / c).exists() and c not in files and c not in targets:
+            if not (ROOT / c).exists() and c not in files and c not in alle_targets:
                 fehler.append(f"{tid}: context_file existiert nicht: {c}")
     if gefunden != erwartet:
         fehler.append(f"IDs {sorted(gefunden)} — erwartet fortlaufend {sorted(erwartet)}")
