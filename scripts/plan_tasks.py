@@ -56,7 +56,7 @@ für ein günstiges Programmiermodell. Du schreibst NICHT die Implementierung �
 du schreibst Task-Beschreibungen und die fertigen Tests, die die Spezifikation SIND.
 
 Halte dich exakt an tasks/README.md (unten). Wichtigste Regeln:
-- 2 bis 4 Tasks. Jede Task ändert max. 3 Dateien (target_files).
+- 2 bis 3 Tasks (lieber weniger, dafür vollständig). Jede Task ändert max. 3 Dateien (target_files).
 - Neue Daten nur in NEUEN Modell-Dateien/Tabellen (keine Migrationen bestehender Tabellen).
 - Oberfläche: eine Datei pro Bereich unter apps/api/ui/. Neuer Bereich = neue Datei
   + Eintrag in BEREICHE in apps/api/web.py (dann web.py als target_file).
@@ -78,7 +78,7 @@ ANTWORTFORMAT, exakt:
 (für jede Task beide Dateien; IDs fortlaufend ab der vorgegebenen Start-ID;
 depends_on darf auf erledigte Tasks und auf die eigenen neuen verweisen)"""
 
-FILE_RE = re.compile(r"===FILE:\s*(.+?)\s*===\n(.*?)\n===END===", re.S)
+FILE_RE = re.compile(r"===FILE:[ \t]*([^\n=]+?)[ \t]*===\n(.*?)\n===END===", re.S)
 
 
 # ─── Auswahl ────────────────────────────────────────────────────────
@@ -148,8 +148,8 @@ def pruefe(files: dict[str, str], start_id: int) -> list[str]:
         if not (re.fullmatch(r"tasks/open/T\d{3}-[a-z0-9-]+\.md", p)
                 or re.fullmatch(r"tests/task_tests/test_t\d{3}_[a-z0-9_]+\.py", p)):
             fehler.append(f"Unerlaubter Pfad: {p}")
-    if not 2 <= len(tasks) <= 4:
-        fehler.append(f"{len(tasks)} Tasks — erlaubt sind 2 bis 4")
+    if not 2 <= len(tasks) <= 3:
+        fehler.append(f"{len(tasks)} Tasks — erlaubt sind 2 bis 3")
     erwartet = {f"T{start_id + i:03d}" for i in range(len(tasks))}
     gefunden = set()
     for p, c in tasks.items():
@@ -208,10 +208,10 @@ def pruefe_im_container(files: dict[str, str]) -> list[str]:
 
 async def plane(messages: list[dict]) -> tuple[str, float]:
     guard, client = BudgetGuard(), OpenRouterClient(timeout_s=300.0)
-    est = OpenRouterClient.estimate_cost(ModelChoice.PLANNING, 40_000, 12_000)
+    est = OpenRouterClient.estimate_cost(ModelChoice.PLANNING, 40_000, 24_000)
     guard.reserve(est, pot="planning")
     resp = await client.chat(messages=messages, model=ModelChoice.PLANNING,
-                             max_tokens=16_000, temperature=0.2)
+                             max_tokens=32_000, temperature=0.2)
     guard.commit(resp.cost_usd or est, pot="planning")
     return resp.text, resp.cost_usd or 0
 
@@ -267,6 +267,8 @@ def main() -> int:
             if fehler:
                 entferne(files)
         print(f"[plan] Runde {runde}: {len(files)} Dateien, {len(fehler)} Fehler")
+        for f in fehler[:6]:
+            print(f"        - {f[:200]}")
         if not fehler:
             break
         messages += [{"role": "assistant", "content": text[-20_000:]},
