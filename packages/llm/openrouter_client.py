@@ -45,6 +45,7 @@ class ModelChoice(str, Enum):
     CARE_CHEAP    = "qwen/qwen3-coder-next"
     LEGAL         = "anthropic/claude-sonnet-5.5"
     RESEARCH      = "anthropic/claude-sonnet-5.5"
+    PLANNING      = "anthropic/claude-sonnet-5.5"  # zerlegt Ideen in Tasks + Tests
 
 
 def _load_config() -> dict:

@@ -7,7 +7,8 @@
     "care_primary": "deepseek/deepseek-v4-pro",
     "care_cheap": "qwen/qwen3-coder-next",
     "legal": "anthropic/claude-sonnet-5.5",
-    "research": "anthropic/claude-sonnet-5.5"
+    "research": "anthropic/claude-sonnet-5.5",
+    "planning": "anthropic/claude-sonnet-5.5"
   },
   "fallbacks": {
     "build_primary": [
@@ -36,6 +37,10 @@
       "anthropic/claude-sonnet-5"
     ],
     "research": [
+      "anthropic/claude-sonnet-5.5",
+      "anthropic/claude-sonnet-5"
+    ],
+    "planning": [
       "anthropic/claude-sonnet-5.5",
       "anthropic/claude-sonnet-5"
     ]

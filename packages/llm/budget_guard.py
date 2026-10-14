@@ -64,13 +64,15 @@ class BudgetGuard:
     # ── Lookups ────────────────────────────────────────────────
     def _key(self, pot: str, date: dt.date | None = None) -> str:
         date = date or dt.date.today()
-        if pot in ("legal", "research"):
+        if pot in ("legal", "research", "planning"):
             return f"budget:legal:{date.strftime('%Y-%m')}"
         return f"budget:{pot}:{date.isoformat()}"
 
     def _limit_for(self, pot: str) -> float:
         if pot == "legal":
             return self.legal_limit
+        if pot == "planning":
+            return float(os.environ.get("PLANNING_MONTHLY_BUDGET_USD", "3.00"))
         if pot == "research":
             return float(os.environ.get("RESEARCH_MONTHLY_BUDGET_USD", "2.00"))
         return self.daily_limit
@@ -100,7 +102,7 @@ class BudgetGuard:
         """Schreibt tatsächlichen Verbrauch. Idempotent nicht möglich –
         Caller darf nur einmal pro Call committen."""
         key = self._key(pot)
-        ttl_days = 35 if pot in ("legal", "research") else 7
+        ttl_days = 35 if pot in ("legal", "research", "planning") else 7
         self.redis.incrbyfloat(key, actual_usd)
         self.redis.expire(key, ttl_days * 86400)
         return self.state(pot)
@@ -139,7 +141,7 @@ class BudgetGuard:
 # ── CLI: `python -m packages.llm.budget_guard status` ─────────
 def _cli_status() -> int:
     g = BudgetGuard()
-    for pot in ("daily", "legal"):
+    for pot in ("daily", "legal", "research", "planning"):
         s = g.state(pot)
         print(
             f"[{pot}] spent ${s.spent_usd:.4f} / ${s.limit_usd:.2f} "

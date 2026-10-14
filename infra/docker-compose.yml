@@ -73,6 +73,7 @@ services:
       - ../scripts:/app/scripts
       - ../tests:/app/tests
       - ../contributions:/app/contributions
+      - ../ideas:/app/ideas
       - ../reports:/app/reports
       - ../legal_requirements.yaml:/app/legal_requirements.yaml
       - ../pytest.ini:/app/pytest.ini

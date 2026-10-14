@@ -302,6 +302,19 @@ async def _process_github_issues(token: str, llm: OpenRouterClient, guard: Budge
                 reject_reason=verdict.get("reject_reason"),
             )
 
+            # Angenommene Beiträge werden zur Idee — der Planer (plan_tasks.py)
+            # zerlegt sie später in geprüfte Tasks. Community-Ideen bekommen
+            # einen Bonus, damit Stimmen aus der Praxis nicht hinten anstehen.
+            if action == "accepted":
+                inbox = ROOT / "ideas" / "inbox"
+                inbox.mkdir(parents=True, exist_ok=True)
+                slug = "".join(ch if ch.isalnum() else "-" for ch in title.lower())[:40].strip("-")
+                (inbox / f"{dt.date.today().isoformat()}-community-{number}-{slug}.md").write_text(
+                    f"---\ntitel: {json.dumps(title, ensure_ascii=False)}\n"
+                    f"quelle: community-issue #{number}\nscore: 30\nstatus: neu\n---\n\n"
+                    f"{body}\n\n**Einschätzung der KI:** {verdict.get('roadmap_note', '')}\n"
+                )
+
             processed += 1
 
     return processed
