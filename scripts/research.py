@@ -114,18 +114,27 @@ async def ideen_ableiten(client, guard, bericht: str) -> tuple[list[dict], float
     est = OpenRouterClient.estimate_cost(ModelChoice.RESEARCH, 8_000, 2_500)
     guard.reserve(est, pot="research")
     resp = await client.chat(
-        messages=[{"role": "system", "content": IDEEN_SYSTEM},
+        messages=[{"role": "system", "content": IDEEN_SYSTEM + "\nNur ASCII-Anführungszeichen im JSON, keine Kommentare, kein Markdown."},
                   {"role": "user", "content": bericht}],
         model=ModelChoice.RESEARCH, max_tokens=3_000, temperature=0.3,
     )
     guard.commit(resp.cost_usd or est, pot="research")
     raw = resp.text
     raw = raw[raw.find("["): raw.rfind("]") + 1]
-    try:
-        return json.loads(raw), resp.cost_usd or 0
-    except json.JSONDecodeError:
-        print("[research] Ideen-JSON nicht lesbar")
-        return [], resp.cost_usd or 0
+    for kandidat in (raw, re.sub(r",\s*([\]}])", r"\1", raw), raw.replace("\u201e", '"').replace("\u201c", '"')):
+        try:
+            return json.loads(kandidat), resp.cost_usd or 0
+        except json.JSONDecodeError:
+            continue
+    # letzter Ausweg: Objekt für Objekt retten
+    ideen = []
+    for m in re.finditer(r"\{[^{}]*\}", raw, re.S):
+        try:
+            ideen.append(json.loads(m.group(0)))
+        except json.JSONDecodeError:
+            pass
+    print(f"[research] Ideen-JSON teilweise gerettet: {len(ideen)}")
+    return ideen, resp.cost_usd or 0
 
 
 
@@ -190,7 +199,11 @@ def main() -> int:
             git_commit_push(written, f"docs(research): Ideen aus {src.name} — {len(ideen)} Ideen")
         return 0
 
-    thema = args.thema or THEMEN[dt.date.today().month % len(THEMEN)]
+    # Nächstes noch nicht recherchiertes Thema (Rotation nach Monat wiederholte
+    # sich, sobald zweimal im selben Monat recherchiert wurde)
+    erledigt = " ".join(p.read_text()[:600] for p in REPORTS.glob("*.md")) if REPORTS.exists() else ""
+    offen = [t for t in THEMEN if t[:60] not in erledigt]
+    thema = args.thema or (offen or THEMEN)[0]
     print(f"[research] Schwerpunkt: {thema[:90]}…")
     try:
         bericht, ideen, cost = asyncio.run(run(thema))
