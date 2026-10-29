@@ -57,4 +57,22 @@
     </div>
   {% endfor %}
 {% endif %}
+
+<h2>Frühwarnungen der letzten 48 Stunden</h2>
+<p class="muted">Das sind Hinweise zum genaueren Hinschauen, keine Diagnosen. Ihr entscheidet im Team, was daraus folgt.</p>
+{% if fruehwarnungen %}
+  {% for m, p in fruehwarnungen %}
+    <div class="card">
+      <strong>{{ p.name }}</strong>
+      {% if m.auffaelligkeiten_liste() %}
+        <ul>{% for a in m.auffaelligkeiten_liste() %}<li>{{ a }}</li>{% endfor %}</ul>
+      {% endif %}
+      {% if m.freitext %}<p>{{ m.freitext }}</p>{% endif %}
+      <p class="muted">gemeldet von {{ m.author }}, {{ m.created_at.strftime("%d.%m. %H:%M") }}</p>
+      <a href="/ui/bewohner/{{ p.id }}" class="btn-secondary">Zum Profil</a>
+    </div>
+  {% endfor %}
+{% else %}
+  <p class="leer">Keine Frühwarnungen in den letzten 48 Stunden.</p>
+{% endif %}
 {% endblock %}

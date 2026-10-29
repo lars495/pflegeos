@@ -3,22 +3,23 @@ id: T036
 title: Frühwarnungen in der Übergabe zeigen und im Profil verlinken
 roadmap_item: Recherche 2026-10-29 — Stop-and-Watch-Frühwarnkarte für alle Qualifikationsstufen
 depends_on:
-  - T034
-  - T035
+- T034
+- T035
 target_files:
-  - apps/api/ui/uebergabe.py
-  - apps/api/templates/uebergabe.html
-  - apps/api/templates/bewohner_detail.html
+- apps/api/ui/uebergabe.py
+- apps/api/templates/uebergabe.html
+- apps/api/templates/bewohner_detail.html
 context_files:
-  - apps/api/ui/uebergabe.py
-  - apps/api/templates/uebergabe.html
-  - apps/api/templates/bewohner_detail.html
-  - apps/api/models/fruehwarnung.py
-  - apps/api/ui/notizen.py
-  - tests/task_tests/test_t036_ui_fruehwarnung_uebergabe.py
+- apps/api/ui/uebergabe.py
+- apps/api/templates/uebergabe.html
+- apps/api/templates/bewohner_detail.html
+- apps/api/models/fruehwarnung.py
+- apps/api/ui/notizen.py
+- tests/task_tests/test_t036_ui_fruehwarnung_uebergabe.py
 test_command: pytest -q tests/task_tests/test_t036_ui_fruehwarnung_uebergabe.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-10-29'
 ---
 
 Die Meldungen der Frühwarnkarte (T035) erscheinen in der Übergabeansicht der nächsten Schicht.

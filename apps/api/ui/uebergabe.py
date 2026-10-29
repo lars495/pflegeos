@@ -16,6 +16,7 @@ from apps.api.models.resident import Resident
 from apps.api.models.beobachtung import Beobachtung
 from apps.api.models.hinweis import PersonHinweis
 from apps.api.models.uebergabe_notiz import UebergabeNotiz
+from apps.api.models.fruehwarnung import FruehwarnMeldung
 from apps.api.ui.common import templates
 
 router = APIRouter()
@@ -44,6 +45,14 @@ async def ui_uebergabe(request: Request, session: AsyncSession = Depends(get_ses
     notizen: dict[str, list] = {}
     for n in freigegeben:
         notizen.setdefault(n.resident_id, []).append(n)
+    # Frühwarnungen der letzten 48 Stunden
+    grenze = dt.datetime.utcnow() - dt.timedelta(hours=48)
+    zeilen = (await session.execute(
+        select(FruehwarnMeldung, Resident)
+        .join(Resident, Resident.id == FruehwarnMeldung.resident_id)
+        .where(FruehwarnMeldung.created_at >= grenze)
+        .order_by(FruehwarnMeldung.created_at.desc()))).all()
+    fruehwarnungen = [(m, p) for m, p in zeilen]
     return templates.TemplateResponse(request, "uebergabe.html",
         {"personen": personen, "beobachtungen": je_person, "hinweise": hinweise,
-         "notizen": notizen})
+         "notizen": notizen, "fruehwarnungen": fruehwarnungen})
