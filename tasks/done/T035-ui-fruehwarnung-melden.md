@@ -3,22 +3,23 @@ id: T035
 title: Frühwarnkarte ausfüllen und Fragen anpassen
 roadmap_item: Recherche 2026-10-29 — Stop-and-Watch-Frühwarnkarte für alle Qualifikationsstufen
 depends_on:
-  - T034
+- T034
 target_files:
-  - apps/api/ui/fruehwarnung.py
-  - apps/api/templates/fruehwarnung_neu.html
-  - apps/api/web.py
+- apps/api/ui/fruehwarnung.py
+- apps/api/templates/fruehwarnung_neu.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/ui/notizen.py
-  - apps/api/ui/common.py
-  - apps/api/models/fruehwarnung.py
-  - apps/api/audit.py
-  - apps/api/templates/sbar.html
-  - tests/task_tests/test_t035_ui_fruehwarnung_melden.py
+- apps/api/web.py
+- apps/api/ui/notizen.py
+- apps/api/ui/common.py
+- apps/api/models/fruehwarnung.py
+- apps/api/audit.py
+- apps/api/templates/sbar.html
+- tests/task_tests/test_t035_ui_fruehwarnung_melden.py
 test_command: pytest -q tests/task_tests/test_t035_ui_fruehwarnung_melden.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-10-29'
 ---
 
 Eine kurze Karte mit Ja-Fragen (Kästchen zum Ankreuzen) und einem Freitext, die jede Person im

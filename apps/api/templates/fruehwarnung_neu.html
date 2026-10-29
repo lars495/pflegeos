@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Frühwarnkarte — {{ person.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+  <span class="avatar">{{ person.name|initialen }}</span>
+  <h1>{{ person.name }}</h1>
+  <p class="lead">Mir ist etwas aufgefallen</p>
+  <p class="muted">Das ist ein Hinweis zum genaueren Hinschauen, keine Diagnose. Jede Stimme im Team zählt gleich. Was daraus folgt, entscheidet ihr gemeinsam.</p>
+
+  {% if erfolg %}
+    <p class="erfolg">{{ erfolg }}</p>
+  {% endif %}
+  {% if hinweistext %}
+    <p class="hinweis">{{ hinweistext }}</p>
+  {% endif %}
+
+  <form method="post" action="/ui/bewohner/{{ person.id }}/fruehwarnung">
+    <label for="author">Dein Kürzel</label>
+    <input type="text" id="author" name="author">
+
+    {% for f in fragen %}
+      {% if f.aktiv %}
+        <input type="checkbox" name="ja" value="{{ f.id }}" id="frage-{{ f.id }}">
+        <label for="frage-{{ f.id }}">{{ f.text }}</label>
+      {% endif %}
+    {% endfor %}
+
+    <label for="freitext">Was ist dir sonst noch aufgefallen?</label>
+    <textarea id="freitext" name="freitext"></textarea>
+
+    <button type="submit" class="btn">Meldung speichern</button>
+  </form>
+
+  <h2>Fragen anpassen</h2>
+  <p class="muted">Diese Fragen sind ein Vorschlag. Ihr könnt sie als Team ändern.</p>
+
+  {% for f in fragen %}
+    <div>
+      <span>{{ f.text }}</span>
+      <span>{% if f.aktiv %}an{% else %}aus{% endif %}</span>
+      <form method="post" action="/ui/bewohner/{{ person.id }}/fruehwarnung/fragen/{{ f.id }}/umschalten" style="display:inline;">
+        <button type="submit" class="btn-secondary">
+          {% if f.aktiv %}Ausschalten{% else %}Einschalten{% endif %}
+        </button>
+      </form>
+    </div>
+  {% endfor %}
+
+  <form method="post" action="/ui/bewohner/{{ person.id }}/fruehwarnung/fragen">
+    <label for="neue-frage">Eigene Frage ergänzen</label>
+    <input type="text" id="neue-frage" name="text">
+    <button type="submit" class="btn">Frage hinzufügen</button>
+  </form>
+
+  <p><a href="/ui/bewohner/{{ person.id }}" class="btn-secondary">Zurück zum Profil</a></p>
+</div>
+{% endblock %}
