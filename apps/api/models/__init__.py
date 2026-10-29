@@ -12,6 +12,10 @@ from __future__ import annotations
 import importlib
 import pkgutil
 
+# Expliziter Import, damit die neuen Tabellen auch bei Autodiscovery-Fehlern
+# (z. B. Testumgebung) mit Base.metadata registriert werden.
+from apps.api.models import fruehwarnung  # noqa: F401
+
 for _mod in pkgutil.iter_modules(__path__):
     if not _mod.name.startswith("_"):
         importlib.import_module(f"{__name__}.{_mod.name}")

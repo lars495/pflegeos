@@ -4,17 +4,18 @@ title: Frühwarn-Modelle (Fragen und Meldungen) anlegen
 roadmap_item: Recherche 2026-10-29 — Stop-and-Watch-Frühwarnkarte für alle Qualifikationsstufen
 depends_on: []
 target_files:
-  - apps/api/models/fruehwarnung.py
-  - apps/api/models/__init__.py
+- apps/api/models/fruehwarnung.py
+- apps/api/models/__init__.py
 context_files:
-  - apps/api/models/beobachtung.py
-  - apps/api/models/uebergabe_notiz.py
-  - apps/api/models/__init__.py
-  - apps/api/db.py
-  - tests/task_tests/test_t034_fruehwarnung_modell.py
+- apps/api/models/beobachtung.py
+- apps/api/models/uebergabe_notiz.py
+- apps/api/models/__init__.py
+- apps/api/db.py
+- tests/task_tests/test_t034_fruehwarnung_modell.py
 test_command: pytest -q tests/task_tests/test_t034_fruehwarnung_modell.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-10-29'
 ---
 
 Zwei neue Tabellen für die Frühwarnkarte (Stop-and-Watch). Nur neue Tabellen, keine Änderung
