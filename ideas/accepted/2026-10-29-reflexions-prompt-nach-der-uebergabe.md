@@ -1,11 +1,11 @@
 ---
-titel: "Reflexions-Prompt nach der Übergabe"
+titel: Reflexions-Prompt nach der Übergabe
 quelle: research 2026-10-29
 pz: 3
 emp: 5
 kom: 1
 score: 22
-status: neu
+status: angenommen — automatisch geplant als T037–T039 am 2026-10-30
 ---
 
 Nach der Schichtübergabe erscheint im Reflexions-Tool optional eine kurze Frage, etwa: Welche Information über eine Bewohnerin hat dir heute gefehlt? Die Antworten sind privat, und nur selbst freigegebene Punkte gehen anonymisiert in die Teambesprechung. Das Team entscheidet damit selbst, welche Felder der Übergabe angepasst werden.
