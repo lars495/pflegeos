@@ -11,7 +11,8 @@ context_files:
 - tests/task_tests/test_t037_uebergabe_reflexion_modell.py
 test_command: pytest -q tests/task_tests/test_t037_uebergabe_reflexion_modell.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-10-30'
 ---
 
 Nach der Schichtübergabe kann eine Pflegekraft freiwillig eine kurze Frage beantworten
