@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}PflegeOS — Frage zum Abschluss{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h1>Eine Frage zum Abschluss</h1>
+  <p class="lead">{{ frage }}</p>
+  <p class="muted">Das ist freiwillig und dauert unter einer Minute. Deine Antwort ist privat — nur du siehst sie.</p>
+
+  {% if status == "gespeichert" %}
+    <p class="erfolg">Danke! Deine Antwort ist privat gespeichert. Du entscheidest später, ob du sie anonym mit dem Team teilst.</p>
+  {% elif status == "uebersprungen" %}
+    <p class="hinweis">Kein Problem — die Frage ist freiwillig.</p>
+  {% else %}
+    {% if status == "kuerzel_fehlt" %}
+      <p class="hinweis">Bitte gib dein Kürzel an, damit nur du deine Antwort wiederfindest.</p>
+    {% endif %}
+    <form method="post" action="/ui/uebergabe-frage">
+      <label for="author">Dein Kürzel</label>
+      <input type="text" id="author" name="author" placeholder="Dein Kürzel">
+      <label for="antwort">Deine Antwort</label>
+      <textarea id="antwort" name="antwort">{{ antwort }}</textarea>
+      <p class="muted">Bitte keine Namen von Bewohner:innen nennen.</p>
+      <button type="submit" class="btn">Privat speichern</button>
+    </form>
+  {% endif %}
+
+  <a href="/ui/uebergabe-frage/meine" class="btn-secondary">Meine Antworten</a>
+  <a href="/ui/uebergabe-frage/team" class="btn-secondary">Was das Team geteilt hat</a>
+  <a href="/ui/uebergabe" class="btn-secondary">Zurück zur Übergabe</a>
+</div>
+{% endblock %}

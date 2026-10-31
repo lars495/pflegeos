@@ -17,14 +17,14 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from apps.api.ui import beobachtung, bewohner, fruehwarnung, notizen, reflexion, start, team, uebergabe
+from apps.api.ui import beobachtung, bewohner, fruehwarnung, notizen, reflexion, start, team, uebergabe, uebergabe_frage
 from apps.api.ui.beobachtung import BEOBACHTUNG_KATEGORIEN  # noqa: F401 — von Tests genutzt
 from apps.api.ui.common import initialen, templates  # noqa: F401
 from apps.api.ui.team import TEAM_MINDESTANZAHL  # noqa: F401
 
 # Reihenfolge: bewohner vor allen anderen /ui/bewohner/{id}/... ist unkritisch,
 # weil diese Pfade mehr Segmente haben; innerhalb von bewohner.py steht /neu vor /{id}.
-BEREICHE = [start, bewohner, beobachtung, notizen, reflexion, uebergabe, team, fruehwarnung]
+BEREICHE = [start, bewohner, beobachtung, notizen, reflexion, uebergabe, team, fruehwarnung, uebergabe_frage]
 
 router = APIRouter()
 for bereich in BEREICHE:

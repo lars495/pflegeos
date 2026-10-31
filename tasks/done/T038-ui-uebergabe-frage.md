@@ -17,7 +17,8 @@ context_files:
 - tests/task_tests/test_t038_ui_uebergabe_frage.py
 test_command: pytest -q tests/task_tests/test_t038_ui_uebergabe_frage.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-10-31'
 ---
 
 Neuer Bereich „Übergabe-Frage": Nach der Schichtübergabe kann eine Pflegekraft **freiwillig**
