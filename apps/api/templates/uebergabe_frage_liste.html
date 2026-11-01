@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}PflegeOS — Meine Antworten / Team{% endblock %}
+
+{% block content %}
+<div class="card">
+  {% if modus == "meine" %}
+    <h1>Meine Antworten</h1>
+    <p class="muted">Nur du siehst diese Seite mit deinem Kürzel. Geteilte Punkte erscheinen anonym.</p>
+    <form method="get" action="/ui/uebergabe-frage/meine">
+      <label for="author">Dein Kürzel</label>
+      <input type="text" id="author" name="author" value="{{ author }}">
+      <button type="submit" class="btn">Anzeigen</button>
+    </form>
+    {% if author %}
+      {% if eintraege %}
+        {% for e in eintraege %}
+          <div class="card">
+            <p>{{ e.antwort }}</p>
+            {% if e.geteilt %}
+              <span>Mit dem Team geteilt (anonym)</span>
+              <form method="post" action="/ui/uebergabe-frage/{{ e.id }}/zuruecknehmen">
+                <input type="hidden" name="author" value="{{ author }}">
+                <button type="submit" class="btn-secondary">Zurücknehmen</button>
+              </form>
+            {% else %}
+              <span>Privat</span>
+              <form method="post" action="/ui/uebergabe-frage/{{ e.id }}/teilen">
+                <input type="hidden" name="author" value="{{ author }}">
+                <button type="submit" class="btn">Anonym teilen</button>
+              </form>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="leer">Noch keine Antworten.</p>
+      {% endif %}
+    {% endif %}
+  {% elif modus == "team" %}
+    <h1>Was das Team geteilt hat</h1>
+    <p class="muted">Diese Punkte sind anonym und wurden freiwillig geteilt. Das Team entscheidet gemeinsam, welche Felder der Übergabe angepasst werden.</p>
+    {% if punkte %}
+      {% for punkt in punkte %}
+        <div class="card">
+          <p>{{ punkt }}</p>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="leer">Noch nichts geteilt.</p>
+    {% endif %}
+  {% endif %}
+  <a href="/ui/uebergabe-frage" class="btn-secondary">Zur Frage</a>
+  <a href="/ui/uebergabe" class="btn-secondary">Zurück zur Übergabe</a>
+</div>
+{% endblock %}
