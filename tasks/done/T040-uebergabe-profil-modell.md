@@ -11,7 +11,8 @@ context_files:
 - tests/task_tests/test_t040_uebergabe_profil_modell.py
 test_command: pytest -q tests/task_tests/test_t040_uebergabe_profil_modell.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-11-02'
 ---
 
 Neue Datei `apps/api/models/uebergabe_profil.py` mit **einer** Klasse `UebergabeProfil`.
