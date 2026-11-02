@@ -1,11 +1,11 @@
 ---
-titel: "Wunsch- und Biografie-Block in der Übergabeansicht"
+titel: Wunsch- und Biografie-Block in der Übergabeansicht
 quelle: research 2026-10-29
 pz: 5
 emp: 3
 kom: 2
 score: 20
-status: neu
+status: angenommen — automatisch geplant als T040–T042 am 2026-11-02
 ---
 
 Die servergerenderte Übergabeansicht pro Bewohner:in zeigt neben den klinischen Auffälligkeiten einen festen Block mit Biografie-Stichpunkten, aktuellen Wünschen und Wohlbefinden aus dem Bewohnerprofil. So wird die I-PASS-artige Struktur um die personenzentrierte Ebene ergänzt. Die Felder sind aus dem bestehenden Profil vorbefüllt und von der Pflegekraft editierbar.
