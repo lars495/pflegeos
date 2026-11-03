@@ -22,7 +22,8 @@ context_files:
 - tests/task_tests/test_t041_ui_uebergabe_block.py
 test_command: pytest -q tests/task_tests/test_t041_ui_uebergabe_block.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 2
+completed_at: '2026-11-03'
 ---
 
 Neue Seite `GET /ui/bewohner/{resident_id}/uebergabe`: die Übergabeansicht **einer** Person.

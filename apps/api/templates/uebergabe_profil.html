@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}PflegeOS — Übergabe {{ person.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+  <span class="avatar">{{ person.name|initialen }}</span>
+  <h1>{{ person.name }}</h1>
+
+  {% if fehler %}
+  <p class="hinweis">{{ fehler }}</p>
+  {% endif %}
+
+  <p class="muted">Vorbefüllt aus dem Profil. Die Pflegekraft entscheidet, was in der Übergabe steht.</p>
+  <p class="muted">Hypothese: Diese Übergabe-Struktur ist an I-PASS angelehnt, in der Langzeitpflege aber nicht belegt. Wir prüfen gemeinsam, ob sie hilft.</p>
+
+  <h2>Wer ich bin</h2>
+  {% if biografie_zeilen %}
+  <ul class="wunsch-liste">
+    {% for zeile in biografie_zeilen %}
+    <li>{{ zeile }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="leer">Noch nichts eingetragen.</p>
+  {% endif %}
+
+  <h2>Das wünsche ich mir</h2>
+  {% if wuensche_zeilen %}
+  <ul class="wunsch-liste">
+    {% for zeile in wuensche_zeilen %}
+    <li>{{ zeile }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="leer">Noch nichts eingetragen.</p>
+  {% endif %}
+
+  <h2>Wie es mir heute geht</h2>
+  {% if wohlbefinden_zeilen %}
+  <ul class="wunsch-liste">
+    {% for zeile in wohlbefinden_zeilen %}
+    <li>{{ zeile }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="leer">Noch nichts eingetragen.</p>
+  {% endif %}
+
+  <h2>Auffälligkeiten</h2>
+  {% if beobachtungen %}
+  {% for b in beobachtungen %}
+  <div class="card">
+    <p>{{ b.kategorie }}: {{ b.notiz }}</p>
+    <span class="muted">{{ b.author }}</span>
+  </div>
+  {% endfor %}
+  {% else %}
+  <p class="leer">Nichts gemeldet.</p>
+  {% endif %}
+
+  <h2>Notizen aus der letzten Schicht</h2>
+  {% if notizen %}
+  {% for n in notizen %}
+  <div class="card">
+    <p>{{ n.text }}</p>
+    <span class="muted">{{ n.author }}</span>
+  </div>
+  {% endfor %}
+  {% else %}
+  <p class="leer">Keine freigegebenen Notizen.</p>
+  {% endif %}
+
+  <p><a href="/ui/bewohner/{{ person.id }}" class="btn-secondary">Zum Profil</a></p>
+</div>
+{% endblock %}
