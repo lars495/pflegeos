@@ -71,6 +71,20 @@
   <p class="leer">Keine freigegebenen Notizen.</p>
   {% endif %}
 
+  <h2>Für die Übergabe anpassen</h2>
+  <p class="muted">Das Profil selbst bleibt unverändert. Nur die Übergabe zeigt deine Fassung.</p>
+  <form method="post" action="/ui/bewohner/{{ person.id }}/uebergabe">
+    <label for="author">Dein Kürzel</label>
+    <input type="text" id="author" name="author" placeholder="Dein Kürzel">
+    <label for="biografie">Wer ich bin</label>
+    <textarea id="biografie" name="biografie">{{ texte.biografie }}</textarea>
+    <label for="wuensche">Das wünsche ich mir</label>
+    <textarea id="wuensche" name="wuensche">{{ texte.wuensche }}</textarea>
+    <label for="wohlbefinden">Wie es mir heute geht</label>
+    <textarea id="wohlbefinden" name="wohlbefinden">{{ texte.wohlbefinden }}</textarea>
+    <button type="submit" class="btn">Für die Übergabe speichern</button>
+  </form>
+
   <p><a href="/ui/bewohner/{{ person.id }}" class="btn-secondary">Zum Profil</a></p>
 </div>
 {% endblock %}

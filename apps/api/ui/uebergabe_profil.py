@@ -7,11 +7,14 @@ angepasst hat). Bearbeiten folgt in T042.
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import HTMLResponse
+import datetime as dt
+
+from fastapi import APIRouter, Depends, Form, HTTPException, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from apps.api.audit import log_action
 from apps.api.db import get_session
 from apps.api.models.beobachtung import Beobachtung
 from apps.api.models.resident import Resident
@@ -124,3 +127,65 @@ async def ui_uebergabe_profil(
     if person is None:
         raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
     return await _seite(request, session, person)
+
+
+@router.post("/ui/bewohner/{resident_id}/uebergabe", response_class=HTMLResponse)
+async def ui_uebergabe_profil_speichern(
+    resident_id: str,
+    request: Request,
+    author: str = Form(""),
+    biografie: str = Form(""),
+    wuensche: str = Form(""),
+    wohlbefinden: str = Form(""),
+    session: AsyncSession = Depends(get_session),
+):
+    person = await session.get(Resident, resident_id)
+    if person is None:
+        raise HTTPException(status_code=404, detail="Bewohner:in nicht gefunden")
+
+    if not author.strip():
+        return await _seite(
+            request,
+            session,
+            person,
+            fehler="Bitte trage dein Kürzel ein, dann wird gespeichert.",
+            status_code=422,
+        )
+
+    biografie_norm = _norm(biografie)
+    wuensche_norm = _norm(wuensche)
+    wohlbefinden_norm = _norm(wohlbefinden)
+
+    vor = await vorbefuellung(session, person)
+
+    # Nur abweichende Werte speichern, sonst None (live aus Profil)
+    biografie_wert = biografie_norm if biografie_norm != vor["biografie"] else None
+    wuensche_wert = wuensche_norm if wuensche_norm != vor["wuensche"] else None
+    wohlbefinden_wert = wohlbefinden_norm if wohlbefinden_norm != vor["wohlbefinden"] else None
+
+    profil = (await session.execute(
+        select(UebergabeProfil).where(UebergabeProfil.resident_id == resident_id)
+    )).scalars().first()
+
+    if profil is None:
+        profil = UebergabeProfil(resident_id=resident_id)
+        session.add(profil)
+
+    profil.biografie = biografie_wert
+    profil.wuensche = wuensche_wert
+    profil.wohlbefinden = wohlbefinden_wert
+    profil.bearbeitet_von = author.strip()
+    profil.updated_at = dt.datetime.utcnow()
+
+    await log_action(
+        session,
+        actor=author.strip(),
+        action="uebergabe_profil.bearbeitet",
+        resource_type="resident",
+        resource_id=resident_id,
+    )
+
+    await session.commit()
+    return RedirectResponse(
+        f"/ui/bewohner/{resident_id}/uebergabe", status_code=303
+    )
