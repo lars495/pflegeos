@@ -1,11 +1,11 @@
 ---
-titel: "SBAR-Vorlage für die Meldung an Ärzt:innen"
+titel: SBAR-Vorlage für die Meldung an Ärzt:innen
 quelle: research 2026-10-29
 pz: 3
 emp: 4
 kom: 2
 score: 17
-status: neu
+status: angenommen — automatisch geplant als T043–T045 am 2026-11-05
 ---
 
 Aus einer Stop-and-Watch-Meldung kann die Pflegekraft mit einem Klick eine SBAR-Vorlage (Situation, Hintergrund, Einschätzung, Empfehlung) erzeugen. Sie ist mit Daten aus dem Bewohnerprofil vorbefüllt, per Hand editierbar und als Druck- oder Faxansicht ausgebbar. Erst nach Bestätigung durch die Pflegekraft wird sie gespeichert.
