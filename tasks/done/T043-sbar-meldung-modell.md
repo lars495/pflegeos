@@ -4,14 +4,15 @@ title: Datenmodell für gespeicherte SBAR-Meldungen an Ärzt:innen
 roadmap_item: Recherche 2026-10-29 — SBAR-Vorlage für die Meldung an Ärzt:innen
 depends_on: []
 target_files:
-  - apps/api/models/sbar_meldung.py
+- apps/api/models/sbar_meldung.py
 context_files:
-  - apps/api/models/beobachtung.py
-  - apps/api/models/sbar.py
-  - tests/task_tests/test_t043_sbar_meldung_modell.py
+- apps/api/models/beobachtung.py
+- apps/api/models/sbar.py
+- tests/task_tests/test_t043_sbar_meldung_modell.py
 test_command: pytest -q tests/task_tests/test_t043_sbar_meldung_modell.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
+completed_at: '2026-11-05'
 ---
 
 Neue Tabelle für SBAR-Meldungen, die eine Pflegekraft **ausdrücklich bestätigt** hat.
