@@ -3,23 +3,23 @@ id: T044
 title: SBAR-Vorlage aus Frühwarnung erzeugen, bearbeiten und nach Bestätigung speichern
 roadmap_item: Recherche 2026-10-29 — SBAR-Vorlage für die Meldung an Ärzt:innen
 depends_on:
-  - T043
-  - T036
+- T043
+- T036
 target_files:
-  - apps/api/ui/sbar_meldung.py
-  - apps/api/templates/sbar_meldung.html
-  - apps/api/web.py
+- apps/api/ui/sbar_meldung.py
+- apps/api/templates/sbar_meldung.html
+- apps/api/web.py
 context_files:
-  - apps/api/web.py
-  - apps/api/ui/notizen.py
-  - apps/api/models/sbar_meldung.py
-  - apps/api/models/fruehwarnung.py
-  - apps/api/models/resident.py
-  - apps/api/audit.py
-  - tests/task_tests/test_t044_ui_sbar_meldung_vorlage.py
+- apps/api/web.py
+- apps/api/ui/notizen.py
+- apps/api/models/sbar_meldung.py
+- apps/api/models/fruehwarnung.py
+- apps/api/models/resident.py
+- apps/api/audit.py
+- tests/task_tests/test_t044_ui_sbar_meldung_vorlage.py
 test_command: pytest -q tests/task_tests/test_t044_ui_sbar_meldung_vorlage.py
 max_attempts: 3
-attempts_used: 0
+attempts_used: 1
 ---
 
 Aus einer Frühwarnung („Mir ist etwas aufgefallen“, Stop-and-Watch) erzeugt die
