@@ -19,7 +19,7 @@ context_files:
 - tests/task_tests/test_t044_ui_sbar_meldung_vorlage.py
 test_command: pytest -q tests/task_tests/test_t044_ui_sbar_meldung_vorlage.py
 max_attempts: 3
-attempts_used: 2
+attempts_used: 3
 ---
 
 Aus einer Frühwarnung („Mir ist etwas aufgefallen“, Stop-and-Watch) erzeugt die
